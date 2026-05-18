@@ -209,7 +209,7 @@ function Navbar() {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 2, marginLeft: "auto" }}>
-            {[["Products", "products"], ["Suppliers", "suppliers"], ["Dashboard", "dashboard"]].map(([label, page]) => (
+            {[["Products", "products"], ["Suppliers", "suppliers"], ["Dashboard", "dashboard"], ...(profile?.role === "admin" ? [["Admin 👑", "admin"]] : [])].map(([label, page]) => (
               <button key={page} onClick={() => go(page)}
                 style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 12px", borderRadius: 8, fontSize: 14, fontWeight: 500, color: "#64748b", fontFamily: "Manrope,sans-serif" }}
                 onMouseEnter={e => { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.color = "#0f172a"; }}
@@ -734,6 +734,189 @@ function SupplierProfilePage({ supplierId }) {
   );
 }
 
+// ─── ADMIN PAGE ───────────────────────────────────────────────────────────────
+function AdminPage() {
+  const { user, profile } = useAuth();
+  const { go } = useNav();
+  const [activeTab, setActiveTab] = useState("overview");
+  const [users, setUsers] = useState([]);
+  const [allMessages, setAllMessages] = useState([]);
+  const [stats, setStats] = useState({ users: 0, suppliers: 0, messages: 0, buyers: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user || profile?.role !== "admin") { go("home"); return; }
+    loadData();
+  }, [user, profile]);
+
+  async function loadData() {
+    setLoading(true);
+    const [{ data: profilesData }, { data: msgsData }] = await Promise.all([
+      supabase.from("profiles").select("*").order("created_at", { ascending: false }),
+      supabase.from("messages").select("*").order("created_at", { ascending: false }),
+    ]);
+    setUsers(profilesData || []);
+    setAllMessages(msgsData || []);
+    setStats({
+      users: profilesData?.length || 0,
+      suppliers: profilesData?.filter(p => p.role === "supplier").length || 0,
+      buyers: profilesData?.filter(p => p.role === "buyer").length || 0,
+      messages: msgsData?.length || 0,
+    });
+    setLoading(false);
+  }
+
+  async function updateRole(userId, role) {
+    await supabase.from("profiles").update({ role }).eq("id", userId);
+    setUsers(prev => prev.map(u => u.id === userId ? { ...u, role } : u));
+    setStats(s => ({ ...s, suppliers: users.filter(u => u.role === "supplier").length, buyers: users.filter(u => u.role === "buyer").length }));
+  }
+
+  async function deleteUser(userId) {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+    await supabase.from("profiles").delete().eq("id", userId);
+    setUsers(prev => prev.filter(u => u.id !== userId));
+  }
+
+  const tabs = [{ id: "overview", label: "Overview", icon: "📊" }, { id: "users", label: "Users", icon: "👥" }, { id: "messages", label: "Messages", icon: "💬" }];
+  const roleColors = { admin: { bg: "#fef9c3", text: "#a16207" }, supplier: { bg: "#ede9fe", text: "#7c3aed" }, buyer: { bg: "#dcfce7", text: "#15803d" } };
+
+  if (loading) return <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}><Spinner /></div>;
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#fafafa" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 24px" }}>
+
+        {/* Header */}
+        <div style={{ marginBottom: 32 }}>
+          <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 28, fontWeight: 800, color: "#0f172a", marginBottom: 4 }}>👑 Admin Panel</h1>
+          <p style={{ color: "#94a3b8" }}>Manage your USOOL platform</p>
+        </div>
+
+        {/* Tabs */}
+        <div style={{ display: "flex", gap: 0, marginBottom: 28, borderBottom: "1px solid #e2e8f0" }}>
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setActiveTab(t.id)}
+              style={{ padding: "10px 20px", background: "none", border: "none", cursor: "pointer", fontFamily: "Manrope,sans-serif", fontWeight: 600, fontSize: 14, color: activeTab === t.id ? "#7c3aed" : "#64748b", borderBottom: `2px solid ${activeTab === t.id ? "#7c3aed" : "transparent"}`, marginBottom: -1, display: "flex", alignItems: "center", gap: 6 }}>
+              {t.icon} {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Overview */}
+        {activeTab === "overview" && (
+          <div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 32 }}>
+              {[
+                { label: "Total Users", value: stats.users, icon: "👥", color: "#7c3aed" },
+                { label: "Suppliers", value: stats.suppliers, icon: "🏭", color: "#059669" },
+                { label: "Buyers", value: stats.buyers, icon: "🛒", color: "#2563eb" },
+                { label: "Messages", value: stats.messages, icon: "💬", color: "#db2777" },
+              ].map(stat => (
+                <div key={stat.label} style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 14, padding: 20, display: "flex", alignItems: "center", gap: 14 }}>
+                  <div style={{ width: 48, height: 48, borderRadius: 12, background: stat.color + "15", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{stat.icon}</div>
+                  <div>
+                    <div style={{ fontFamily: "Sora,sans-serif", fontSize: 28, fontWeight: 800, color: "#0f172a" }}>{stat.value}</div>
+                    <div style={{ fontSize: 12, color: "#94a3b8" }}>{stat.label}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Recent signups */}
+            <div style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 14, overflow: "hidden" }}>
+              <div style={{ padding: "16px 20px", borderBottom: "1px solid #f8fafc" }}><h2 style={{ fontWeight: 700, fontSize: 16 }}>Recent Signups</h2></div>
+              {users.slice(0, 5).map(u => (
+                <div key={u.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 20px", borderBottom: "1px solid #f8fafc" }}>
+                  <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#f5f3ff", display: "flex", alignItems: "center", justifyContent: "center", color: "#7c3aed", fontWeight: 800, flexShrink: 0 }}>
+                    {(u.full_name || u.email || "?")[0].toUpperCase()}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 600, fontSize: 14 }}>{u.full_name || "No name"}</div>
+                    <div style={{ fontSize: 12, color: "#94a3b8" }}>{u.email}</div>
+                  </div>
+                  <span style={{ background: roleColors[u.role]?.bg || "#f1f5f9", color: roleColors[u.role]?.text || "#64748b", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 99 }}>{u.role || "buyer"}</span>
+                  <div style={{ fontSize: 12, color: "#94a3b8" }}>{new Date(u.created_at).toLocaleDateString()}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Users */}
+        {activeTab === "users" && (
+          <div style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 14, overflow: "hidden" }}>
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid #f8fafc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h2 style={{ fontWeight: 700, fontSize: 16 }}>All Users ({users.length})</h2>
+            </div>
+            {users.length === 0 ? (
+              <div style={{ textAlign: "center", padding: 40, color: "#94a3b8" }}>No users yet</div>
+            ) : users.map(u => (
+              <div key={u.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 20px", borderBottom: "1px solid #f8fafc", flexWrap: "wrap" }}>
+                <div style={{ width: 44, height: 44, borderRadius: "50%", background: "#f5f3ff", display: "flex", alignItems: "center", justifyContent: "center", color: "#7c3aed", fontWeight: 800, fontSize: 16, flexShrink: 0 }}>
+                  {(u.full_name || u.email || "?")[0].toUpperCase()}
+                </div>
+                <div style={{ flex: 1, minWidth: 160 }}>
+                  <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 2 }}>{u.full_name || "No name"}</div>
+                  <div style={{ fontSize: 12, color: "#94a3b8" }}>{u.email}</div>
+                </div>
+                <span style={{ background: roleColors[u.role]?.bg || "#f1f5f9", color: roleColors[u.role]?.text || "#64748b", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 99 }}>{u.role || "buyer"}</span>
+                <div style={{ display: "flex", gap: 8 }}>
+                  {u.role !== "admin" && (
+                    <select value={u.role || "buyer"} onChange={e => updateRole(u.id, e.target.value)}
+                      style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12, fontFamily: "Manrope,sans-serif", cursor: "pointer" }}>
+                      <option value="buyer">Buyer</option>
+                      <option value="supplier">Supplier</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  )}
+                  {u.id !== user.id && (
+                    <button onClick={() => deleteUser(u.id)}
+                      style={{ background: "#fef2f2", color: "#dc2626", border: "none", padding: "6px 12px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>
+                      Delete
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Messages */}
+        {activeTab === "messages" && (
+          <div style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 14, overflow: "hidden" }}>
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid #f8fafc" }}>
+              <h2 style={{ fontWeight: 700, fontSize: 16 }}>All Messages ({allMessages.length})</h2>
+            </div>
+            {allMessages.length === 0 ? (
+              <div style={{ textAlign: "center", padding: 40, color: "#94a3b8" }}>
+                <div style={{ fontSize: 40, marginBottom: 12 }}>💬</div>
+                <p>No messages yet</p>
+              </div>
+            ) : allMessages.map(msg => (
+              <div key={msg.id} style={{ padding: "16px 20px", borderBottom: "1px solid #f8fafc", display: "flex", gap: 14, alignItems: "flex-start" }}>
+                <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#f5f3ff", display: "flex", alignItems: "center", justifyContent: "center", color: "#7c3aed", fontWeight: 800, flexShrink: 0 }}>
+                  {(msg.sender_name || msg.sender_email || "?")[0].toUpperCase()}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                    <div>
+                      <span style={{ fontWeight: 700, fontSize: 14 }}>{msg.sender_name || "Unknown"}</span>
+                      <span style={{ fontSize: 12, color: "#94a3b8", marginLeft: 8 }}>{msg.sender_email}</span>
+                    </div>
+                    <span style={{ fontSize: 12, color: "#94a3b8" }}>{new Date(msg.created_at).toLocaleDateString()}</span>
+                  </div>
+                  <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.5 }}>{msg.content}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── SUPPLIERS PAGE ───────────────────────────────────────────────────────────
 function SuppliersPage() {
   const { go } = useNav();
@@ -1045,6 +1228,7 @@ function AppContent() {
     suppliers: <SuppliersPage />,
     dashboard: <DashboardPage />,
     auth: <AuthPage />,
+    admin: <AdminPage />,
   };
 
   return (
