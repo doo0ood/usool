@@ -124,9 +124,9 @@ function ContactModal({ supplier, onClose }) {
     const { error: err } = await supabase.from("messages").insert({
       sender_id: user.id,
       supplier_id: supplier.id,
-      sender_name: profile?.full_name || user.email,
+      sender_name: profile?.full_name || user?.email || "Anonymous",
       sender_company: profile?.company_name || "",
-      sender_email: user.email,
+      sender_email: user?.email || "",
       content: subject ? `[${subject}]\n\n${message}` : message,
       from_role: "buyer",
       read: false,
@@ -185,7 +185,7 @@ function ContactModal({ supplier, onClose }) {
 
 // ─── NAVBAR ───────────────────────────────────────────────────────────────────
 function Navbar() {
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const { go } = useNav();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -959,6 +959,7 @@ function DashboardPage() {
   const [realMessages, setRealMessages] = useState([]);
   const [loadingMsgs, setLoadingMsgs] = useState(false);
   const statusColors = { pending: { bg: "#fef9c3", text: "#a16207" }, replied: { bg: "#dbeafe", text: "#1d4ed8" }, accepted: { bg: "#dcfce7", text: "#15803d" }, expired: { bg: "#f1f5f9", text: "#64748b" } };
+  const unreadCount = realMessages.filter(m => !m.read).length;
   const navItems = [{ id: "overview", label: "Overview", icon: "📊" }, { id: "inquiries", label: "My Inquiries", icon: "📋" }, { id: "messages", label: `Messages${unreadCount > 0 ? ` (${unreadCount})` : ""}`, icon: "💬" }, { id: "saved", label: "Saved Products", icon: "❤️" }, { id: "settings", label: "Settings", icon: "⚙️" }];
 
   useEffect(() => {
