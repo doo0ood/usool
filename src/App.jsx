@@ -959,8 +959,6 @@ function DashboardPage() {
   const [realMessages, setRealMessages] = useState([]);
   const [loadingMsgs, setLoadingMsgs] = useState(false);
   const statusColors = { pending: { bg: "#fef9c3", text: "#a16207" }, replied: { bg: "#dbeafe", text: "#1d4ed8" }, accepted: { bg: "#dcfce7", text: "#15803d" }, expired: { bg: "#f1f5f9", text: "#64748b" } };
-  const unreadCount = realMessages.filter(m => !m.read).length;
-  const navItems = [{ id: "overview", label: "Overview", icon: "📊" }, { id: "inquiries", label: "My Inquiries", icon: "📋" }, { id: "messages", label: `Messages${unreadCount > 0 ? ` (${unreadCount})` : ""}`, icon: "💬" }, { id: "saved", label: "Saved Products", icon: "❤️" }, { id: "settings", label: "Settings", icon: "⚙️" }];
 
   useEffect(() => {
     if (!user) return;
@@ -969,7 +967,6 @@ function DashboardPage() {
 
   async function loadMessages() {
     setLoadingMsgs(true);
-    // If supplier: load messages sent TO them. If buyer/admin: load messages sent BY them.
     let query = supabase.from("messages").select("*").order("created_at", { ascending: false });
     if (profile?.role === "supplier") {
       const { data: sup } = await supabase.from("suppliers").select("id").eq("profile_id", user.id).single();
@@ -988,6 +985,7 @@ function DashboardPage() {
   }
 
   const unreadCount = realMessages.filter(m => !m.read).length;
+  const navItems = [{ id: "overview", label: "Overview", icon: "📊" }, { id: "inquiries", label: "My Inquiries", icon: "📋" }, { id: "messages", label: `Messages${unreadCount > 0 ? ` (${unreadCount})` : ""}`, icon: "💬" }, { id: "saved", label: "Saved Products", icon: "❤️" }, { id: "settings", label: "Settings", icon: "⚙️" }];
 
   if (!user) return (
     <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
