@@ -10,26 +10,15 @@ const supabase = createClient(
 // ─── MOCK DATA ───────────────────────────────────────────────────────────────
 const countries = [
   { code: "AE", name: "UAE", flag: "🇦🇪" },
-  { code: "SA", name: "Saudi Arabia", flag: "🇸🇦" },
-  { code: "QA", name: "Qatar", flag: "🇶🇦" },
-  { code: "KW", name: "Kuwait", flag: "🇰🇼" },
-  { code: "BH", name: "Bahrain", flag: "🇧🇭" },
-  { code: "OM", name: "Oman", flag: "🇴🇲" },
 ];
 
 const categories = [
-  { id: "electronics", name: "Electronics", icon: "💻", count: 12450 },
-  { id: "machinery", name: "Machinery", icon: "⚙️", count: 8320 },
-  { id: "textiles", name: "Textiles & Apparel", icon: "👔", count: 15600 },
-  { id: "food", name: "Food & Beverages", icon: "🍽️", count: 9870 },
-  { id: "construction", name: "Construction", icon: "🏗️", count: 7200 },
-  { id: "chemicals", name: "Chemicals", icon: "🧪", count: 5430 },
-  { id: "fashion", name: "Fashion & Accessories", icon: "👜", count: 11200 },
-  { id: "auto", name: "Auto Parts", icon: "🚗", count: 6890 },
-  { id: "oil-gas", name: "Oil & Gas Equipment", icon: "🛢️", count: 4560 },
-  { id: "packaging", name: "Packaging", icon: "📦", count: 3210 },
-  { id: "agriculture", name: "Agriculture", icon: "🌾", count: 4120 },
-  { id: "healthcare", name: "Healthcare", icon: "🏥", count: 5670 },
+  { id: "healthcare", name: "Healthcare", icon: "🏥", count: 0 },
+  { id: "packaging", name: "Packaging", icon: "📦", count: 0 },
+  { id: "textiles", name: "Textiles & Apparel", icon: "👔", count: 0 },
+  { id: "machinery", name: "Machinery", icon: "⚙️", count: 0 },
+  { id: "agriculture", name: "Agriculture", icon: "🌾", count: 0 },
+  { id: "electronics", name: "Electronics", icon: "💻", count: 0 },
 ];
 
 const products = [
@@ -309,14 +298,14 @@ function HomePage() {
         <div style={{ position: "absolute", bottom: 0, left: 0, width: 400, height: 400, background: "#059669", borderRadius: "50%", opacity: 0.04, transform: "translate(-25%,50%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 720, margin: "0 auto", position: "relative", animation: "fadeUp .5s ease" }}>
           <div style={{ display: "inline-block", background: "#ede9fe", color: "#7c3aed", border: "1px solid #c4b5fd", padding: "6px 18px", borderRadius: 99, fontSize: 13, fontWeight: 700, marginBottom: 24 }}>
-            🌍 The #1 B2B Platform for the Gulf Region
+            🇦🇪 UAE's #1 B2B Supplier Marketplace
           </div>
           <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 62, fontWeight: 800, lineHeight: 1.08, color: "#0f172a", marginBottom: 24 }}>
             Your Gateway to{" "}
             <span style={{ background: "linear-gradient(135deg,#7c3aed,#059669)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Gulf Trade</span>
           </h1>
           <p style={{ fontSize: 18, color: "#64748b", lineHeight: 1.7, maxWidth: 580, margin: "0 auto 36px" }}>
-            Connect with verified suppliers, vendors, and investors across the GCC. Source products, request quotes, and grow your business.
+            Connect with verified UAE suppliers across healthcare, packaging, textiles, machinery, agriculture and electronics. All in one place.
           </p>
           <div style={{ display: "flex", gap: 12, maxWidth: 520, margin: "0 auto 24px" }}>
             <div style={{ position: "relative", flex: 1 }}>
@@ -329,7 +318,7 @@ function HomePage() {
           </div>
           <div style={{ display: "flex", gap: 10, justifyContent: "center", fontSize: 13, color: "#94a3b8", flexWrap: "wrap" }}>
             <span>Popular:</span>
-            {["Steel Pipes", "Dates", "LED Lights", "Textiles"].map(t => (
+            {["Healthcare", "Packaging", "Textiles", "Machinery"].map(t => (
               <button key={t} onClick={() => go("products")} style={{ background: "none", border: "none", cursor: "pointer", color: "#7c3aed", fontSize: 13, textDecoration: "underline", fontFamily: "Manrope,sans-serif" }}>{t}</button>
             ))}
           </div>
@@ -339,7 +328,7 @@ function HomePage() {
       {/* Stats */}
       <section style={{ borderTop: "1px solid #f1f5f9", borderBottom: "1px solid #f1f5f9" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 24px", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 24, textAlign: "center" }}>
-          {[["50K+", "Active Suppliers", "🏭"], ["1M+", "Products Listed", "📦"], ["6", "GCC Countries", "🌍"], ["$2B+", "Trade Volume", "📊"]].map(([val, label, icon]) => (
+          {[["UAE Only", "100% Local Suppliers", "🇦🇪"], ["6", "Industries", "🏭"], ["Free", "To Browse & Contact", "✅"], ["Verified", "Trusted Suppliers", "🔒"]].map(([val, label, icon]) => (
             <div key={label}>
               <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
               <div style={{ fontFamily: "Sora,sans-serif", fontSize: 28, fontWeight: 800, color: "#0f172a" }}>{val}</div>
@@ -421,8 +410,8 @@ function HomePage() {
           </div>
           <div>
             <span style={{ background: "#ede9fe", color: "#7c3aed", fontSize: 12, fontWeight: 700, padding: "4px 14px", borderRadius: 99 }}>For Suppliers</span>
-            <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 36, fontWeight: 800, color: "#0f172a", margin: "16px 0", lineHeight: 1.2 }}>Become a trusted Gulf supplier</h2>
-            <p style={{ color: "#64748b", fontSize: 16, lineHeight: 1.7, marginBottom: 28 }}>Get verified, showcase your catalog, and receive direct inquiries from qualified buyers across the GCC.</p>
+            <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 36, fontWeight: 800, color: "#0f172a", margin: "16px 0", lineHeight: 1.2 }}>Become a trusted UAE supplier</h2>
+            <p style={{ color: "#64748b", fontSize: 16, lineHeight: 1.7, marginBottom: 28 }}>Get verified, showcase your products, and receive direct inquiries from UAE buyers. Build long-term partnerships with local businesses.</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 28 }}>
               {["Direct Buyer Access", "Trust Certification", "Instant RFQs", "Buyer Network"].map(f => (
                 <div key={f} style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderRadius: 10, background: "#fff", border: "1px solid #ede9fe", fontSize: 13, fontWeight: 600, color: "#0f172a" }}>
@@ -568,10 +557,10 @@ function ProductsPage({ initCategory = "", initSearch = "" }) {
                 </div>
               </div>
               <div>
-                <h3 style={{ fontWeight: 700, fontSize: 13, marginBottom: 10 }}>Country</h3>
-                {countries.map(c => (
-                  <label key={c.code} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#64748b", marginBottom: 7, cursor: "pointer" }}>
-                    <input type="checkbox" /> {c.flag} {c.name}
+                <h3 style={{ fontWeight: 700, fontSize: 13, marginBottom: 10 }}>Emirate</h3>
+                {["Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"].map(e => (
+                  <label key={e} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#64748b", marginBottom: 7, cursor: "pointer" }}>
+                    <input type="checkbox" /> 🇦🇪 {e}
                   </label>
                 ))}
               </div>
@@ -672,9 +661,20 @@ function ProductDetailPage({ productId }) {
 // ─── SUPPLIER PROFILE ─────────────────────────────────────────────────────────
 function SupplierProfilePage({ supplierId }) {
   const { go } = useNav();
-  const supplier = suppliers.find(s => s.id === supplierId) || suppliers[0];
-  const supplierProducts = products.filter(p => p.supplierId === supplier.id);
+  const [supplier, setSupplier] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [showContact, setShowContact] = useState(false);
+
+  useEffect(() => {
+    if (!supplierId) return;
+    supabase.from("suppliers").select("*").eq("id", supplierId).single().then(({ data }) => {
+      setSupplier(data);
+      setLoading(false);
+    });
+  }, [supplierId]);
+
+  if (loading) return <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}><Spinner /></div>;
+  if (!supplier) return <div style={{ textAlign: "center", padding: 80, color: "#94a3b8" }}>Supplier not found.</div>;
 
   return (
     <div style={{ minHeight: "100vh" }}>
@@ -682,13 +682,15 @@ function SupplierProfilePage({ supplierId }) {
       <div style={{ background: "linear-gradient(135deg,#7c3aed,#059669)", height: 192, position: "relative" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px", height: "100%", display: "flex", alignItems: "flex-end" }}>
           <div style={{ display: "flex", alignItems: "flex-end", gap: 20, transform: "translateY(40px)" }}>
-            <div style={{ width: 88, height: 88, borderRadius: 18, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, border: "4px solid #fff", boxShadow: "0 8px 24px rgba(0,0,0,0.15)" }}>{supplier.logo}</div>
+            <div style={{ width: 88, height: 88, borderRadius: 18, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, border: "4px solid #fff", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", overflow: "hidden" }}>
+              {supplier.logo_url ? <img src={supplier.logo_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : "🏢"}
+            </div>
             <div style={{ paddingBottom: 8 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 24, fontWeight: 800, color: "#fff" }}>{supplier.name}</h1>
+                <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 24, fontWeight: 800, color: "#fff" }}>{supplier.company_name}</h1>
                 {supplier.verified && <span style={{ background: "#fff", color: "#7c3aed", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 99 }}>✓ Verified</span>}
               </div>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.8)" }}>📍 {supplier.country.flag} {supplier.country.name}</p>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.8)" }}>📍 {supplier.emirate} · {supplier.category}</p>
             </div>
           </div>
         </div>
@@ -698,33 +700,35 @@ function SupplierProfilePage({ supplierId }) {
           <div>
             <div style={{ marginBottom: 32 }}>
               <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 20, fontWeight: 700, marginBottom: 12 }}>About</h2>
-              <p style={{ color: "#64748b", lineHeight: 1.7 }}>{supplier.description}</p>
+              <p style={{ color: "#64748b", lineHeight: 1.7 }}>{supplier.description || supplier.tagline || "No description provided."}</p>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 32 }}>
-              {[["📦", "Products", supplier.stats.products], ["⏱️", "Response Rate", supplier.stats.responseRate], ["⭐", "Years Active", supplier.stats.yearsActive], ["👥", "Employees", supplier.stats.employees]].map(([icon, label, val]) => (
+              {[["📦", "MOQ", supplier.moq], ["⏱️", "Lead Time", supplier.lead_time], ["👥", "Employees", supplier.employees], ["📅", "Founded", supplier.founded]].filter(([,,v]) => v).map(([icon, label, val]) => (
                 <div key={label} style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 14, padding: "18px 12px", textAlign: "center" }}>
                   <div style={{ fontSize: 22, marginBottom: 8 }}>{icon}</div>
-                  <div style={{ fontFamily: "Sora,sans-serif", fontSize: 22, fontWeight: 800, marginBottom: 4 }}>{val}</div>
+                  <div style={{ fontFamily: "Sora,sans-serif", fontSize: 18, fontWeight: 800, marginBottom: 4 }}>{val}</div>
                   <div style={{ fontSize: 11, color: "#94a3b8" }}>{label}</div>
                 </div>
               ))}
             </div>
-            <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 20, fontWeight: 700, marginBottom: 20 }}>Product Catalog</h2>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 18 }}>
-              {supplierProducts.map(p => <ProductCard key={p.id} product={p} onClick={() => go("productDetail", { productId: p.id })} />)}
+            <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Product Catalog</h2>
+            <div style={{ textAlign: "center", padding: "40px 0", color: "#94a3b8", background: "#fafafa", borderRadius: 14 }}>
+              <div style={{ fontSize: 40, marginBottom: 12 }}>📦</div>
+              <p>No products listed yet.</p>
             </div>
-            {supplierProducts.length === 0 && <p style={{ color: "#94a3b8", textAlign: "center", padding: 40 }}>No products listed yet.</p>}
           </div>
           <div>
             <div style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 16, padding: 24, position: "sticky", top: 80 }}>
               <button onClick={() => setShowContact(true)} style={{ width: "100%", background: "#7c3aed", color: "#fff", border: "none", padding: 13, borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif", marginBottom: 10, boxShadow: "0 4px 16px rgba(124,58,237,0.3)" }}>💬 Contact Supplier</button>
-              <button style={{ width: "100%", background: "#fff", color: "#7c3aed", border: "1.5px solid #c4b5fd", padding: 12, borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif", marginBottom: 20 }}>Request Catalog</button>
-              <div style={{ borderTop: "1px solid #f8fafc", paddingTop: 20 }}>
-                <h3 style={{ fontWeight: 700, fontSize: 13, marginBottom: 12 }}>Certifications</h3>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                  {supplier.certifications.map(cert => <span key={cert} style={{ background: "#f5f3ff", color: "#7c3aed", fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 99, border: "1px solid #ede9fe" }}>{cert}</span>)}
+              <button onClick={() => setShowContact(true)} style={{ width: "100%", background: "#fff", color: "#7c3aed", border: "1.5px solid #c4b5fd", padding: 12, borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif", marginBottom: 20 }}>Request Catalog</button>
+              {(supplier.phone || supplier.email || supplier.website) && (
+                <div style={{ borderTop: "1px solid #f8fafc", paddingTop: 16 }}>
+                  <h3 style={{ fontWeight: 700, fontSize: 13, marginBottom: 12 }}>Contact Info</h3>
+                  {supplier.phone && <div style={{ fontSize: 13, color: "#64748b", marginBottom: 6 }}>📞 {supplier.phone}</div>}
+                  {supplier.email && <div style={{ fontSize: 13, color: "#64748b", marginBottom: 6 }}>✉️ {supplier.email}</div>}
+                  {supplier.website && <div style={{ fontSize: 13 }}>🌐 <a href={supplier.website} target="_blank" rel="noreferrer" style={{ color: "#7c3aed" }}>{supplier.website}</a></div>}
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -741,6 +745,7 @@ function AdminPage() {
   const [activeTab, setActiveTab] = useState("overview");
   const [users, setUsers] = useState([]);
   const [allMessages, setAllMessages] = useState([]);
+  const [pendingSuppliers, setPendingSuppliers] = useState([]);
   const [stats, setStats] = useState({ users: 0, suppliers: 0, messages: 0, buyers: 0 });
   const [loading, setLoading] = useState(true);
 
@@ -751,19 +756,31 @@ function AdminPage() {
 
   async function loadData() {
     setLoading(true);
-    const [{ data: profilesData }, { data: msgsData }] = await Promise.all([
+    const [{ data: profilesData }, { data: msgsData }, { data: suppliersData }] = await Promise.all([
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("messages").select("*").order("created_at", { ascending: false }),
+      supabase.from("suppliers").select("*").order("created_at", { ascending: false }),
     ]);
     setUsers(profilesData || []);
     setAllMessages(msgsData || []);
+    setPendingSuppliers(suppliersData || []);
     setStats({
       users: profilesData?.length || 0,
-      suppliers: profilesData?.filter(p => p.role === "supplier").length || 0,
+      suppliers: suppliersData?.filter(s => s.status === "Active").length || 0,
       buyers: profilesData?.filter(p => p.role === "buyer").length || 0,
       messages: msgsData?.length || 0,
     });
     setLoading(false);
+  }
+
+  async function approveSupplier(id) {
+    await supabase.from("suppliers").update({ status: "Active" }).eq("id", id);
+    setPendingSuppliers(prev => prev.map(s => s.id === id ? { ...s, status: "Active" } : s));
+  }
+
+  async function rejectSupplier(id) {
+    await supabase.from("suppliers").update({ status: "Rejected" }).eq("id", id);
+    setPendingSuppliers(prev => prev.map(s => s.id === id ? { ...s, status: "Rejected" } : s));
   }
 
   async function updateRole(userId, role) {
@@ -778,7 +795,7 @@ function AdminPage() {
     setUsers(prev => prev.filter(u => u.id !== userId));
   }
 
-  const tabs = [{ id: "overview", label: "Overview", icon: "📊" }, { id: "users", label: "Users", icon: "👥" }, { id: "messages", label: "Messages", icon: "💬" }];
+  const tabs = [{ id: "overview", label: "Overview", icon: "📊" }, { id: "suppliers", label: `Suppliers (${pendingSuppliers.length})`, icon: "🏭" }, { id: "users", label: "Users", icon: "👥" }, { id: "messages", label: "Messages", icon: "💬" }];
   const roleColors = { admin: { bg: "#fef9c3", text: "#a16207" }, supplier: { bg: "#ede9fe", text: "#7c3aed" }, buyer: { bg: "#dcfce7", text: "#15803d" } };
 
   if (loading) return <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}><Spinner /></div>;
@@ -840,6 +857,36 @@ function AdminPage() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Suppliers */}
+        {activeTab === "suppliers" && (
+          <div style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 14, overflow: "hidden" }}>
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid #f8fafc" }}>
+              <h2 style={{ fontWeight: 700, fontSize: 16 }}>All Supplier Applications ({pendingSuppliers.length})</h2>
+            </div>
+            {pendingSuppliers.length === 0 ? (
+              <div style={{ textAlign: "center", padding: 40, color: "#94a3b8" }}>
+                <div style={{ fontSize: 40, marginBottom: 12 }}>🏭</div>
+                <p>No supplier applications yet</p>
+              </div>
+            ) : pendingSuppliers.map(s => (
+              <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderBottom: "1px solid #f8fafc", flexWrap: "wrap" }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: "#f5f3ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>🏢</div>
+                <div style={{ flex: 1, minWidth: 160 }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 2 }}>{s.company_name}</div>
+                  <div style={{ fontSize: 12, color: "#94a3b8" }}>{s.emirate} · {s.category} · {s.email}</div>
+                </div>
+                <span style={{ background: s.status === "Active" ? "#dcfce7" : s.status === "Rejected" ? "#fef2f2" : "#fef9c3", color: s.status === "Active" ? "#16a34a" : s.status === "Rejected" ? "#dc2626" : "#a16207", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 99 }}>{s.status}</span>
+                {s.status === "Pending" && (
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button onClick={() => approveSupplier(s.id)} style={{ background: "#dcfce7", color: "#16a34a", border: "none", padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>✓ Approve</button>
+                    <button onClick={() => rejectSupplier(s.id)} style={{ background: "#fef2f2", color: "#dc2626", border: "none", padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>✕ Reject</button>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
 
@@ -917,34 +964,196 @@ function AdminPage() {
   );
 }
 
+// ─── SUPPLIER REGISTRATION ────────────────────────────────────────────────────
+function SupplierRegistrationPage() {
+  const { user, profile } = useAuth();
+  const { go } = useNav();
+  const [form, setForm] = useState({ company_name: "", tagline: "", category: "", emirate: "", description: "", phone: "", email: "", website: "", moq: "", lead_time: "", employees: "", founded: "" });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const categoryOptions = ["Healthcare", "Packaging", "Textiles & Apparel", "Machinery", "Agriculture", "Electronics"];
+  const emirateOptions = ["Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"];
+
+  async function handleSubmit() {
+    if (!user) { go("auth"); return; }
+    if (!form.company_name || !form.category || !form.emirate) { setError("Please fill in Company Name, Category and Emirate."); return; }
+    setSaving(true); setError("");
+    const { error: err } = await supabase.from("suppliers").insert({
+      profile_id: user.id,
+      company_name: form.company_name,
+      tagline: form.tagline,
+      category: form.category,
+      emirate: form.emirate,
+      description: form.description,
+      phone: form.phone,
+      email: form.email || user.email,
+      website: form.website,
+      moq: form.moq,
+      lead_time: form.lead_time,
+      employees: form.employees,
+      founded: form.founded,
+      status: "Pending",
+      verified: false,
+      featured: false,
+    });
+    setSaving(false);
+    if (err) setError("Failed to submit. " + err.message);
+    else { setSuccess(true); await supabase.from("profiles").update({ role: "supplier" }).eq("id", user.id); }
+  }
+
+  if (success) return (
+    <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div style={{ textAlign: "center", maxWidth: 480 }}>
+        <div style={{ fontSize: 64, marginBottom: 20 }}>🎉</div>
+        <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 26, fontWeight: 800, marginBottom: 12 }}>Application Submitted!</h2>
+        <p style={{ color: "#64748b", fontSize: 16, lineHeight: 1.7, marginBottom: 28 }}>Your supplier profile is under review. Once approved by our team, your business will appear on USOOL for buyers to find.</p>
+        <button onClick={() => go("home")} style={{ background: "#7c3aed", color: "#fff", border: "none", padding: "13px 32px", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>Back to Home</button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ minHeight: "100vh", background: "linear-gradient(160deg,#f5f3ff 0%,#fff 40%)", padding: "48px 24px" }}>
+      <div style={{ maxWidth: 680, margin: "0 auto" }}>
+        <div style={{ marginBottom: 32 }}>
+          <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 32, fontWeight: 800, color: "#0f172a", marginBottom: 8 }}>Register as a Supplier</h1>
+          <p style={{ color: "#64748b", fontSize: 16 }}>Join USOOL and connect with buyers across the GCC. Fill in your company details below.</p>
+        </div>
+
+        {error && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", padding: "12px 16px", borderRadius: 10, fontSize: 14, marginBottom: 20 }}>{error}</div>}
+
+        <div style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 20, padding: 32, boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}>
+          <h3 style={{ fontFamily: "Sora,sans-serif", fontWeight: 700, fontSize: 16, marginBottom: 20, color: "#7c3aed" }}>Company Information</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 20px" }}>
+            {[["Company Name *", "company_name", "text", "e.g. Gulf Steel Industries"], ["Tagline", "tagline", "text", "Short description of your business"], ["Phone", "phone", "text", "+971 50 000 0000"], ["Email", "email", "email", user?.email || "company@example.com"], ["Website", "website", "text", "https://yourwebsite.com"], ["MOQ", "moq", "text", "e.g. 100 units"], ["Lead Time", "lead_time", "text", "e.g. 2-3 weeks"], ["Employees", "employees", "text", "e.g. 50-100"], ["Founded", "founded", "text", "e.g. 2010"]].map(([label, key, type, placeholder]) => (
+              <div key={key} style={{ marginBottom: 16 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6, color: "#0f172a" }}>{label}</label>
+                <input type={type} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={placeholder}
+                  style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif" }} />
+              </div>
+            ))}
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Category *</label>
+              <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
+                style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif", background: "#fff" }}>
+                <option value="">Select category</option>
+                {categoryOptions.map(c => <option key={c}>{c}</option>)}
+              </select>
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Emirate *</label>
+              <select value={form.emirate} onChange={e => setForm(f => ({ ...f, emirate: e.target.value }))}
+                style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif", background: "#fff" }}>
+                <option value="">Select emirate</option>
+                {emirateOptions.map(e => <option key={e}>{e}</option>)}
+              </select>
+            </div>
+          </div>
+          <div style={{ marginBottom: 24 }}>
+            <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Company Description</label>
+            <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={4}
+              placeholder="Tell buyers about your company, products, and what makes you unique..."
+              style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif", resize: "vertical" }} />
+          </div>
+          <button onClick={handleSubmit} disabled={saving}
+            style={{ width: "100%", background: "#7c3aed", color: "#fff", border: "none", padding: 14, borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: saving ? "not-allowed" : "pointer", fontFamily: "Manrope,sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, boxShadow: "0 4px 16px rgba(124,58,237,0.3)", opacity: saving ? .7 : 1 }}>
+            {saving ? <Spinner /> : "Submit Application →"}
+          </button>
+          <p style={{ textAlign: "center", fontSize: 13, color: "#94a3b8", marginTop: 12 }}>Your profile will be reviewed and approved within 24 hours</p>
+        </div>
+      </div>
+      <div style={{ marginTop: 40 }}><Footer /></div>
+    </div>
+  );
+}
+
 // ─── SUPPLIERS PAGE ───────────────────────────────────────────────────────────
 function SuppliersPage() {
   const { go } = useNav();
+  const [realSuppliers, setRealSuppliers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  useEffect(() => { loadSuppliers(); }, []);
+
+  async function loadSuppliers() {
+    setLoading(true);
+    const { data } = await supabase.from("suppliers").select("*").eq("status", "Active").order("featured", { ascending: false });
+    setRealSuppliers(data || []);
+    setLoading(false);
+  }
+
+  const filtered = realSuppliers.filter(s => {
+    const matchSearch = !search || s.company_name?.toLowerCase().includes(search.toLowerCase()) || s.description?.toLowerCase().includes(search.toLowerCase());
+    const matchCat = !selectedCategory || s.category === selectedCategory;
+    return matchSearch && matchCat;
+  });
+
+  const categoryOptions = ["Healthcare", "Packaging", "Textiles & Apparel", "Machinery", "Agriculture", "Electronics"];
+
   return (
     <div style={{ minHeight: "100vh" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 24px" }}>
-        <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 32, fontWeight: 800, marginBottom: 8 }}>Top Suppliers</h1>
-        <p style={{ color: "#94a3b8", marginBottom: 32 }}>Verified Gulf suppliers ready to trade</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 20 }}>
-          {suppliers.map(s => (
-            <div key={s.id} onClick={() => go("supplierProfile", { supplierId: s.id })}
-              style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 16, padding: 24, cursor: "pointer", transition: "all .2s" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#c4b5fd"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(124,58,237,0.1)"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#f1f5f9"; e.currentTarget.style.boxShadow = "none"; }}>
-              <div style={{ display: "flex", gap: 14, alignItems: "center", marginBottom: 14 }}>
-                <div style={{ width: 52, height: 52, borderRadius: 12, background: "#f5f3ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26 }}>{s.logo}</div>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 3 }}>{s.name}</div>
-                  <div style={{ fontSize: 12, color: "#94a3b8" }}>{s.country.flag} {s.country.name} {s.verified && "· ✓ Verified"}</div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 32, flexWrap: "wrap", gap: 16 }}>
+          <div>
+            <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 32, fontWeight: 800, marginBottom: 6 }}>UAE & GCC Suppliers</h1>
+            <p style={{ color: "#94a3b8" }}>Verified suppliers ready to trade</p>
+          </div>
+          <button onClick={() => go("supplierRegister")} style={{ background: "#7c3aed", color: "#fff", border: "none", padding: "12px 24px", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif", boxShadow: "0 4px 12px rgba(124,58,237,0.3)" }}>
+            + Register as Supplier
+          </button>
+        </div>
+
+        {/* Filters */}
+        <div style={{ display: "flex", gap: 12, marginBottom: 28, flexWrap: "wrap" }}>
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search suppliers..."
+            style={{ flex: 1, minWidth: 200, padding: "10px 16px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif" }} />
+          <select value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}
+            style={{ padding: "10px 16px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif", background: "#fff" }}>
+            <option value="">All Categories</option>
+            {categoryOptions.map(c => <option key={c}>{c}</option>)}
+          </select>
+        </div>
+
+        {loading ? (
+          <div style={{ display: "flex", justifyContent: "center", padding: 80 }}><Spinner /></div>
+        ) : filtered.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "80px 0" }}>
+            <div style={{ fontSize: 64, marginBottom: 16 }}>🏭</div>
+            <h3 style={{ fontFamily: "Sora,sans-serif", fontSize: 22, fontWeight: 700, marginBottom: 8 }}>No suppliers yet</h3>
+            <p style={{ color: "#64748b", fontSize: 16, marginBottom: 28 }}>Be the first supplier to join USOOL!</p>
+            <button onClick={() => go("supplierRegister")} style={{ background: "#7c3aed", color: "#fff", border: "none", padding: "13px 32px", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>Register Now →</button>
+          </div>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 20 }}>
+            {filtered.map(s => (
+              <div key={s.id} onClick={() => go("supplierProfile", { supplierId: s.id })}
+                style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 16, padding: 24, cursor: "pointer", transition: "all .2s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "#c4b5fd"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(124,58,237,0.1)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#f1f5f9"; e.currentTarget.style.boxShadow = "none"; }}>
+                <div style={{ display: "flex", gap: 14, alignItems: "center", marginBottom: 14 }}>
+                  <div style={{ width: 52, height: 52, borderRadius: 12, background: "#f5f3ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, flexShrink: 0, overflow: "hidden" }}>
+                    {s.logo_url ? <img src={s.logo_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : "🏢"}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 3 }}>{s.company_name}</div>
+                    <div style={{ fontSize: 12, color: "#94a3b8" }}>📍 {s.emirate} · {s.category}</div>
+                  </div>
+                  {s.verified && <span style={{ marginLeft: "auto", background: "#f0fdf4", color: "#16a34a", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 99 }}>✓ Verified</span>}
+                </div>
+                {s.tagline && <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.6, marginBottom: 14 }}>{s.tagline}</p>}
+                {s.description && !s.tagline && <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.6, marginBottom: 14 }}>{s.description.slice(0, 100)}...</p>}
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {s.moq && <span style={{ background: "#f5f3ff", color: "#7c3aed", fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 99 }}>MOQ: {s.moq}</span>}
+                  {s.lead_time && <span style={{ background: "#f0fdf4", color: "#16a34a", fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 99 }}>⏱ {s.lead_time}</span>}
                 </div>
               </div>
-              <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.6, marginBottom: 14 }}>{s.description.slice(0, 100)}...</p>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {s.certifications.map(cert => <span key={cert} style={{ background: "#f5f3ff", color: "#7c3aed", fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 99 }}>{cert}</span>)}
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
       <Footer />
     </div>
@@ -1224,6 +1433,7 @@ function AppContent() {
     products: <ProductsPage initCategory={params.category || ""} initSearch={params.search || ""} />,
     productDetail: <ProductDetailPage productId={params.productId} />,
     supplierProfile: <SupplierProfilePage supplierId={params.supplierId} />,
+    supplierRegister: <SupplierRegistrationPage />,
     suppliers: <SuppliersPage />,
     dashboard: <DashboardPage />,
     auth: <AuthPage />,
