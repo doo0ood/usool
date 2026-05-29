@@ -1359,6 +1359,9 @@ function DashboardPage() {
   );
 
   function renderView() {
+    if (activeView === "products") return <SupplierProductManagerWrapper user={user} />;
+    if (activeView === "saved") return <div style={{ textAlign: "center", padding: "80px 0", color: "#94a3b8" }}><div style={{ fontSize: 48, marginBottom: 12 }}>❤️</div><p style={{ fontSize: 16 }}>No saved suppliers yet.</p></div>;
+    if (activeView === "settings") return <div style={{ textAlign: "center", padding: "80px 0", color: "#94a3b8" }}><div style={{ fontSize: 48, marginBottom: 12 }}>⚙️</div><p>Account settings coming soon.</p></div>;
     if (activeView === "inquiries") return (
       <div>
         <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 24, fontWeight: 800, marginBottom: 24 }}>My Inquiries</h1>
@@ -1410,9 +1413,6 @@ function DashboardPage() {
         )}
       </div>
     );
-    if (activeView === "saved") return <div style={{ textAlign: "center", padding: "80px 0", color: "#94a3b8" }}><div style={{ fontSize: 48, marginBottom: 12 }}>❤️</div><p>No saved products yet. <button onClick={() => go("products")} style={{ color: "#7c3aed", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>Browse products</button></p></div>;
-    if (activeView === "settings") return <div style={{ textAlign: "center", padding: "80px 0", color: "#94a3b8" }}><div style={{ fontSize: 48, marginBottom: 12 }}>⚙️</div><p>Account settings coming soon.</p></div>;
-
     return (
       <div>
         <div style={{ marginBottom: 32 }}>
@@ -1450,13 +1450,7 @@ function DashboardPage() {
     );
   }
 
-  if (activeView === "products") return (
-    <div>
-      <SupplierProductManagerWrapper user={user} />
-    </div>
-  );
-
-  if (activeView === "saved") return <div style={{ textAlign: "center", padding: "80px 0", color: "#94a3b8" }}><div style={{ fontSize: 48, marginBottom: 12 }}>❤️</div><p style={{ fontSize: 16 }}>No saved suppliers yet.</p></div>;
+  return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <div style={{ width: 220, background: "#fff", borderRight: "1px solid #f1f5f9", flexShrink: 0, padding: "24px 12px" }}>
         <div style={{ padding: "0 8px", marginBottom: 24, fontFamily: "Sora,sans-serif", fontWeight: 800, fontSize: 16 }}>My Account</div>
