@@ -809,6 +809,11 @@ function AdminPage() {
     setPendingSuppliers(prev => prev.map(s => s.id === id ? { ...s, status: "Rejected" } : s));
   }
 
+  async function toggleVerified(id, current) {
+    await supabase.from("suppliers").update({ verified: !current }).eq("id", id);
+    setPendingSuppliers(prev => prev.map(s => s.id === id ? { ...s, verified: !current } : s));
+  }
+
   async function updateRole(userId, role) {
     await supabase.from("profiles").update({ role }).eq("id", userId);
     setUsers(prev => prev.map(u => u.id === userId ? { ...u, role } : u));
@@ -905,11 +910,18 @@ function AdminPage() {
                   <div style={{ fontSize: 12, color: "#94a3b8" }}>{s.emirate} · {s.category} · {s.email}</div>
                 </div>
                 <span style={{ background: s.status === "Active" ? "#dcfce7" : s.status === "Rejected" ? "#fef2f2" : "#fef9c3", color: s.status === "Active" ? "#16a34a" : s.status === "Rejected" ? "#dc2626" : "#a16207", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 99 }}>{s.status}</span>
+                {s.verified && <span style={{ background: "#ede9fe", color: "#7c3aed", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 99 }}>✓ Verified</span>}
                 {s.status === "Pending" && (
                   <div style={{ display: "flex", gap: 8 }}>
                     <button onClick={() => approveSupplier(s.id)} style={{ background: "#dcfce7", color: "#16a34a", border: "none", padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>✓ Approve</button>
                     <button onClick={() => rejectSupplier(s.id)} style={{ background: "#fef2f2", color: "#dc2626", border: "none", padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>✕ Reject</button>
                   </div>
+                )}
+                {s.status === "Active" && (
+                  <button onClick={() => toggleVerified(s.id, s.verified)}
+                    style={{ background: s.verified ? "#fef9c3" : "#ede9fe", color: s.verified ? "#a16207" : "#7c3aed", border: "none", padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>
+                    {s.verified ? "Remove Verified" : "✓ Mark Verified"}
+                  </button>
                 )}
               </div>
             ))}
@@ -1292,6 +1304,152 @@ function SuppliersPage() {
   );
 }
 
+// ─── SUPPLIER PROFILE EDITOR ─────────────────────────────────────────────────
+function SupplierProfileEditor({ user }) {
+  const [supplier, setSupplier] = useState(null);
+  const [form, setForm] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [error, setError] = useState("");
+
+  const categoryOptions = ["Healthcare", "Packaging", "Textiles & Apparel", "Machinery", "Agriculture", "Electronics"];
+  const emirateOptions = ["Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"];
+
+  useEffect(() => {
+    supabase.from("suppliers").select("*").eq("profile_id", user.id).single().then(({ data }) => {
+      if (data) { setSupplier(data); setForm(data); setLogoPreview(data.logo_url); }
+      setLoading(false);
+    });
+  }, [user]);
+
+  function handleLogoChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    setLogoFile(file);
+    setLogoPreview(URL.createObjectURL(file));
+  }
+
+  async function handleSave() {
+    if (!supplier) return;
+    setSaving(true); setError(""); setSaved(false);
+    let logo_url = supplier.logo_url;
+
+    if (logoFile) {
+      const ext = logoFile.name.split(".").pop();
+      const path = `logos/${supplier.id}.${ext}`;
+      const { error: uploadErr } = await supabase.storage.from("usool-images").upload(path, logoFile, { upsert: true });
+      if (!uploadErr) {
+        const { data: urlData } = supabase.storage.from("usool-images").getPublicUrl(path);
+        logo_url = urlData.publicUrl;
+      }
+    }
+
+    const { error: err } = await supabase.from("suppliers").update({
+      company_name: form.company_name,
+      tagline: form.tagline,
+      description: form.description,
+      category: form.category,
+      emirate: form.emirate,
+      phone: form.phone,
+      email: form.email,
+      website: form.website,
+      moq: form.moq,
+      lead_time: form.lead_time,
+      employees: form.employees,
+      founded: form.founded,
+      logo_url,
+    }).eq("id", supplier.id);
+
+    setSaving(false);
+    if (err) setError("Failed to save. " + err.message);
+    else { setSaved(true); setSupplier(s => ({ ...s, logo_url })); setTimeout(() => setSaved(false), 3000); }
+  }
+
+  if (loading) return <div style={{ textAlign: "center", padding: 40 }}><Spinner /></div>;
+
+  if (!supplier) return (
+    <div style={{ textAlign: "center", padding: "60px 0", color: "#94a3b8" }}>
+      <div style={{ fontSize: 48, marginBottom: 12 }}>🏭</div>
+      <p style={{ fontWeight: 600, marginBottom: 8 }}>No supplier profile found</p>
+      <p style={{ fontSize: 14 }}>You need to register as a supplier first.</p>
+    </div>
+  );
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 20, fontWeight: 700 }}>My Profile</h2>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {supplier.status === "Pending" && <span style={{ background: "#fef9c3", color: "#a16207", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 99 }}>⏳ Pending Approval</span>}
+          {supplier.status === "Active" && <span style={{ background: "#dcfce7", color: "#16a34a", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 99 }}>✅ Active</span>}
+          {supplier.verified && <span style={{ background: "#ede9fe", color: "#7c3aed", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 99 }}>✓ Verified</span>}
+        </div>
+      </div>
+
+      {error && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", padding: "10px 14px", borderRadius: 10, fontSize: 13, marginBottom: 16 }}>{error}</div>}
+      {saved && <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#16a34a", padding: "10px 14px", borderRadius: 10, fontSize: 13, marginBottom: 16 }}>✅ Profile saved successfully!</div>}
+
+      {/* Logo Upload */}
+      <div style={{ background: "#f5f3ff", border: "1px solid #ede9fe", borderRadius: 16, padding: 20, marginBottom: 24, display: "flex", alignItems: "center", gap: 20 }}>
+        <div style={{ width: 80, height: 80, borderRadius: 16, background: "#fff", border: "2px solid #ede9fe", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, flexShrink: 0 }}>
+          {logoPreview ? <img src={logoPreview} alt="Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : "🏢"}
+        </div>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 6 }}>Company Logo</div>
+          <p style={{ fontSize: 13, color: "#64748b", marginBottom: 10 }}>Upload your company logo. Recommended: 200x200px, PNG or JPG</p>
+          <label style={{ background: "#7c3aed", color: "#fff", padding: "8px 18px", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+            {logoPreview ? "Change Logo" : "Upload Logo"}
+            <input type="file" accept="image/*" onChange={handleLogoChange} style={{ display: "none" }} />
+          </label>
+        </div>
+      </div>
+
+      {/* Form Fields */}
+      <div style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 16, padding: 24 }}>
+        <h3 style={{ fontFamily: "Sora,sans-serif", fontWeight: 700, fontSize: 15, marginBottom: 20, color: "#7c3aed" }}>Company Information</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 20px" }}>
+          {[["Company Name", "company_name", "text", "Gulf Steel Industries"],["Tagline", "tagline", "text", "Short description"],["Phone", "phone", "text", "+971 50 000 0000"],["Email", "email", "email", "company@example.com"],["Website", "website", "text", "https://yourwebsite.com"],["MOQ", "moq", "text", "e.g. 100 units"],["Lead Time", "lead_time", "text", "e.g. 2-3 weeks"],["Employees", "employees", "text", "e.g. 50-100"],["Founded", "founded", "text", "e.g. 2010"]].map(([label, key, type, ph]) => (
+            <div key={key} style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>{label}</label>
+              <input type={type} value={form[key] || ""} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={ph}
+                style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif" }} />
+            </div>
+          ))}
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Category</label>
+            <select value={form.category || ""} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
+              style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif", background: "#fff" }}>
+              <option value="">Select category</option>
+              {categoryOptions.map(c => <option key={c}>{c}</option>)}
+            </select>
+          </div>
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Emirate</label>
+            <select value={form.emirate || ""} onChange={e => setForm(f => ({ ...f, emirate: e.target.value }))}
+              style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif", background: "#fff" }}>
+              <option value="">Select emirate</option>
+              {emirateOptions.map(e => <option key={e}>{e}</option>)}
+            </select>
+          </div>
+        </div>
+        <div style={{ marginBottom: 24 }}>
+          <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Description</label>
+          <textarea value={form.description || ""} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={4}
+            placeholder="Tell buyers about your company..."
+            style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif", resize: "vertical" }} />
+        </div>
+        <button onClick={handleSave} disabled={saving}
+          style={{ background: "#7c3aed", color: "#fff", border: "none", padding: "12px 32px", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: saving ? "not-allowed" : "pointer", fontFamily: "Manrope,sans-serif", display: "flex", alignItems: "center", gap: 8, boxShadow: "0 4px 16px rgba(124,58,237,0.3)", opacity: saving ? .7 : 1 }}>
+          {saving ? <Spinner /> : "Save Profile"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── SUPPLIER PRODUCT MANAGER WRAPPER ────────────────────────────────────────
 function SupplierProductManagerWrapper({ user }) {
   const [supplierId, setSupplierId] = useState(null);
@@ -1348,7 +1506,7 @@ function DashboardPage() {
   }
 
   const unreadCount = realMessages.filter(m => !m.read).length;
-  const navItems = [{ id: "overview", label: "Overview", icon: "📊" }, { id: "inquiries", label: "My Inquiries", icon: "📋" }, { id: "messages", label: `Messages${unreadCount > 0 ? ` (${unreadCount})` : ""}`, icon: "💬" }, { id: "products", label: "My Products", icon: "📦" }, { id: "saved", label: "Saved Suppliers", icon: "❤️" }, { id: "settings", label: "Settings", icon: "⚙️" }];
+  const navItems = [{ id: "overview", label: "Overview", icon: "📊" }, { id: "inquiries", label: "My Inquiries", icon: "📋" }, { id: "messages", label: `Messages${unreadCount > 0 ? ` (${unreadCount})` : ""}`, icon: "💬" }, { id: "products", label: "My Products", icon: "📦" }, { id: "profile", label: "My Profile", icon: "🏭" }, { id: "settings", label: "Settings", icon: "⚙️" }];
 
   if (!user) return (
     <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
@@ -1360,6 +1518,7 @@ function DashboardPage() {
 
   function renderView() {
     if (activeView === "products") return <SupplierProductManagerWrapper user={user} />;
+    if (activeView === "profile") return <SupplierProfileEditor user={user} />;
     if (activeView === "saved") return <div style={{ textAlign: "center", padding: "80px 0", color: "#94a3b8" }}><div style={{ fontSize: 48, marginBottom: 12 }}>❤️</div><p style={{ fontSize: 16 }}>No saved suppliers yet.</p></div>;
     if (activeView === "settings") return <div style={{ textAlign: "center", padding: "80px 0", color: "#94a3b8" }}><div style={{ fontSize: 48, marginBottom: 12 }}>⚙️</div><p>Account settings coming soon.</p></div>;
     if (activeView === "inquiries") return (
