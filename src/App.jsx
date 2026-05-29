@@ -202,6 +202,7 @@ function StarRating({ rating }) {
 function ContactModal({ supplier, onClose }) {
   const { user, profile } = useAuth();
   const { go } = useNav();
+  const { t } = useLang();
   const [message, setMessage] = useState("");
   const [subject, setSubject] = useState("");
   const [sending, setSending] = useState(false);
@@ -252,21 +253,21 @@ function ContactModal({ supplier, onClose }) {
             {!user && <div style={{ background: "#fef9c3", border: "1px solid #fde68a", color: "#a16207", padding: "10px 14px", borderRadius: 10, fontSize: 13, marginBottom: 16 }}>⚠️ You need to <button onClick={() => { onClose(); go("auth"); }} style={{ color: "#7c3aed", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}>sign in</button> to send messages.</div>}
             {error && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", padding: "10px 14px", borderRadius: 10, fontSize: 13, marginBottom: 16 }}>{error}</div>}
             <div style={{ marginBottom: 14 }}>
-              <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Subject</label>
-              <input value={subject} onChange={e => setSubject(e.target.value)} placeholder="e.g. Quote Request for Steel Pipes"
+              <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>{t.subject}</label>
+              <input value={subject} onChange={e => setSubject(e.target.value)} placeholder="e.g. Quote Request"
                 style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif" }} />
             </div>
             <div style={{ marginBottom: 20 }}>
-              <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Message <span style={{ color: "#ef4444" }}>*</span></label>
+              <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>{t.message} <span style={{ color: "#ef4444" }}>*</span></label>
               <textarea value={message} onChange={e => setMessage(e.target.value)} rows={5}
-                placeholder="Hi, I'm interested in your products. I'd like to request a quote for..."
+                placeholder="Hi, I'm interested in your products..."
                 style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif", resize: "vertical" }} />
             </div>
             <div style={{ display: "flex", gap: 10 }}>
-              <button onClick={onClose} style={{ flex: 1, background: "#f1f5f9", color: "#64748b", border: "none", padding: 12, borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>Cancel</button>
+              <button onClick={onClose} style={{ flex: 1, background: "#f1f5f9", color: "#64748b", border: "none", padding: 12, borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>{t.cancel}</button>
               <button onClick={handleSend} disabled={sending || !user}
                 style={{ flex: 2, background: "#7c3aed", color: "#fff", border: "none", padding: 12, borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: sending || !user ? "not-allowed" : "pointer", fontFamily: "Manrope,sans-serif", opacity: sending || !user ? .7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, boxShadow: "0 4px 12px rgba(124,58,237,0.3)" }}>
-                {sending ? <Spinner /> : "💬 Send Message"}
+                {sending ? <Spinner /> : t.sendMessage}
               </button>
             </div>
           </>
@@ -797,6 +798,7 @@ function ProductDetailPage({ productId }) {
 // ─── SUPPLIER PROFILE ─────────────────────────────────────────────────────────
 function SupplierProfilePage({ supplierId }) {
   const { go } = useNav();
+  const { t } = useLang();
   const [supplier, setSupplier] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showContact, setShowContact] = useState(false);
@@ -855,8 +857,8 @@ function SupplierProfilePage({ supplierId }) {
           </div>
           <div>
             <div style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 16, padding: 24, position: "sticky", top: 80 }}>
-              <button onClick={() => setShowContact(true)} style={{ width: "100%", background: "#7c3aed", color: "#fff", border: "none", padding: 13, borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif", marginBottom: 10, boxShadow: "0 4px 16px rgba(124,58,237,0.3)" }}>💬 Contact Supplier</button>
-              <button onClick={() => setShowContact(true)} style={{ width: "100%", background: "#fff", color: "#7c3aed", border: "1.5px solid #c4b5fd", padding: 12, borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif", marginBottom: 20 }}>Request Catalog</button>
+              <button onClick={() => setShowContact(true)} style={{ width: "100%", background: "#7c3aed", color: "#fff", border: "none", padding: 13, borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif", marginBottom: 10, boxShadow: "0 4px 16px rgba(124,58,237,0.3)" }}>{t.contactSupplier}</button>
+              <button onClick={() => setShowContact(true)} style={{ width: "100%", background: "#fff", color: "#7c3aed", border: "1.5px solid #c4b5fd", padding: 12, borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif", marginBottom: 20 }}>{t.requestCatalog}</button>
               {(supplier.phone || supplier.email || supplier.website) && (
                 <div style={{ borderTop: "1px solid #f8fafc", paddingTop: 16 }}>
                   <h3 style={{ fontWeight: 700, fontSize: 13, marginBottom: 12 }}>Contact Info</h3>
@@ -878,6 +880,7 @@ function SupplierProfilePage({ supplierId }) {
 function AdminPage() {
   const { user, profile } = useAuth();
   const { go } = useNav();
+  const { t } = useLang();
   const [activeTab, setActiveTab] = useState("overview");
   const [users, setUsers] = useState([]);
   const [allMessages, setAllMessages] = useState([]);
@@ -947,8 +950,8 @@ function AdminPage() {
 
         {/* Header */}
         <div style={{ marginBottom: 32 }}>
-          <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 28, fontWeight: 800, color: "#0f172a", marginBottom: 4 }}>👑 Admin Panel</h1>
-          <p style={{ color: "#94a3b8" }}>Manage your USOOL platform</p>
+          <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 28, fontWeight: 800, color: "#0f172a", marginBottom: 4 }}>{t.adminPanel}</h1>
+          <p style={{ color: "#94a3b8" }}>{t.manageUsool}</p>
         </div>
 
         {/* Tabs */}
@@ -1023,14 +1026,14 @@ function AdminPage() {
                 {s.verified && <span style={{ background: "#ede9fe", color: "#7c3aed", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 99 }}>✓ Verified</span>}
                 {s.status === "Pending" && (
                   <div style={{ display: "flex", gap: 8 }}>
-                    <button onClick={() => approveSupplier(s.id)} style={{ background: "#dcfce7", color: "#16a34a", border: "none", padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>✓ Approve</button>
-                    <button onClick={() => rejectSupplier(s.id)} style={{ background: "#fef2f2", color: "#dc2626", border: "none", padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>✕ Reject</button>
+                    <button onClick={() => approveSupplier(s.id)} style={{ background: "#dcfce7", color: "#16a34a", border: "none", padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>{t.approve}</button>
+                    <button onClick={() => rejectSupplier(s.id)} style={{ background: "#fef2f2", color: "#dc2626", border: "none", padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>{t.reject}</button>
                   </div>
                 )}
                 {s.status === "Active" && (
                   <button onClick={() => toggleVerified(s.id, s.verified)}
                     style={{ background: s.verified ? "#fef9c3" : "#ede9fe", color: s.verified ? "#a16207" : "#7c3aed", border: "none", padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>
-                    {s.verified ? "Remove Verified" : "✓ Mark Verified"}
+                    {s.verified ? t.removeVerified : t.markVerified}
                   </button>
                 )}
               </div>
@@ -1326,6 +1329,7 @@ function SupplierRegistrationPage() {
 // ─── SUPPLIERS PAGE ───────────────────────────────────────────────────────────
 function SuppliersPage() {
   const { go } = useNav();
+  const { t } = useLang();
   const [realSuppliers, setRealSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -1357,7 +1361,7 @@ function SuppliersPage() {
             <p style={{ color: "#94a3b8" }}>Verified suppliers ready to trade</p>
           </div>
           <button onClick={() => go("supplierRegister")} style={{ background: "#7c3aed", color: "#fff", border: "none", padding: "12px 24px", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif", boxShadow: "0 4px 12px rgba(124,58,237,0.3)" }}>
-            + Register as Supplier
+            {t.registerSupplier}
           </button>
         </div>
 
@@ -1416,6 +1420,7 @@ function SuppliersPage() {
 
 // ─── SUPPLIER PROFILE EDITOR ─────────────────────────────────────────────────
 function SupplierProfileEditor({ user }) {
+  const { t } = useLang();
   const [supplier, setSupplier] = useState(null);
   const [form, setForm] = useState({});
   const [loading, setLoading] = useState(true);
@@ -1493,9 +1498,9 @@ function SupplierProfileEditor({ user }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 20, fontWeight: 700 }}>My Profile</h2>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {supplier.status === "Pending" && <span style={{ background: "#fef9c3", color: "#a16207", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 99 }}>⏳ Pending Approval</span>}
-          {supplier.status === "Active" && <span style={{ background: "#dcfce7", color: "#16a34a", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 99 }}>✅ Active</span>}
-          {supplier.verified && <span style={{ background: "#ede9fe", color: "#7c3aed", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 99 }}>✓ Verified</span>}
+          {supplier.status === "Pending" && <span style={{ background: "#fef9c3", color: "#a16207", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 99 }}>{t.pendingApproval}</span>}
+          {supplier.status === "Active" && <span style={{ background: "#dcfce7", color: "#16a34a", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 99 }}>{t.active}</span>}
+          {supplier.verified && <span style={{ background: "#ede9fe", color: "#7c3aed", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 99 }}>{t.verified}</span>}
         </div>
       </div>
 
@@ -1511,7 +1516,7 @@ function SupplierProfileEditor({ user }) {
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 6 }}>Company Logo</div>
           <p style={{ fontSize: 13, color: "#64748b", marginBottom: 10 }}>Upload your company logo. Recommended: 200x200px, PNG or JPG</p>
           <label style={{ background: "#7c3aed", color: "#fff", padding: "8px 18px", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-            {logoPreview ? "Change Logo" : "Upload Logo"}
+            {logoPreview ? t.changeLogo : t.uploadLogo}
             <input type="file" accept="image/*" onChange={handleLogoChange} style={{ display: "none" }} />
           </label>
         </div>
@@ -1519,7 +1524,7 @@ function SupplierProfileEditor({ user }) {
 
       {/* Form Fields */}
       <div style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 16, padding: 24 }}>
-        <h3 style={{ fontFamily: "Sora,sans-serif", fontWeight: 700, fontSize: 15, marginBottom: 20, color: "#7c3aed" }}>Company Information</h3>
+        <h3 style={{ fontFamily: "Sora,sans-serif", fontWeight: 700, fontSize: 15, marginBottom: 20, color: "#7c3aed" }}>{t.companyInfo}</h3>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 20px" }}>
           {[["Company Name", "company_name", "text", "Gulf Steel Industries"],["Tagline", "tagline", "text", "Short description"],["Phone", "phone", "text", "+971 50 000 0000"],["Email", "email", "email", "company@example.com"],["Website", "website", "text", "https://yourwebsite.com"],["MOQ", "moq", "text", "e.g. 100 units"],["Lead Time", "lead_time", "text", "e.g. 2-3 weeks"],["Employees", "employees", "text", "e.g. 50-100"],["Founded", "founded", "text", "e.g. 2010"]].map(([label, key, type, ph]) => (
             <div key={key} style={{ marginBottom: 16 }}>
@@ -1553,7 +1558,7 @@ function SupplierProfileEditor({ user }) {
         </div>
         <button onClick={handleSave} disabled={saving}
           style={{ background: "#7c3aed", color: "#fff", border: "none", padding: "12px 32px", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: saving ? "not-allowed" : "pointer", fontFamily: "Manrope,sans-serif", display: "flex", alignItems: "center", gap: 8, boxShadow: "0 4px 16px rgba(124,58,237,0.3)", opacity: saving ? .7 : 1 }}>
-          {saving ? <Spinner /> : "Save Profile"}
+          {saving ? <Spinner /> : t.saveProfile}
         </button>
       </div>
     </div>
@@ -1586,6 +1591,7 @@ function SupplierProductManagerWrapper({ user }) {
 function DashboardPage() {
   const { user, profile } = useAuth();
   const { go } = useNav();
+  const { t } = useLang();
   const [activeView, setActiveView] = useState("overview");
   const [realMessages, setRealMessages] = useState([]);
   const [loadingMsgs, setLoadingMsgs] = useState(false);
@@ -1616,7 +1622,14 @@ function DashboardPage() {
   }
 
   const unreadCount = realMessages.filter(m => !m.read).length;
-  const navItems = [{ id: "overview", label: "Overview", icon: "📊" }, { id: "inquiries", label: "My Inquiries", icon: "📋" }, { id: "messages", label: `Messages${unreadCount > 0 ? ` (${unreadCount})` : ""}`, icon: "💬" }, { id: "products", label: "My Products", icon: "📦" }, { id: "profile", label: "My Profile", icon: "🏭" }, { id: "settings", label: "Settings", icon: "⚙️" }];
+  const navItems = [
+    { id: "overview", label: t.overview, icon: "📊" },
+    { id: "inquiries", label: t.myInquiries, icon: "📋" },
+    { id: "messages", label: `${t.messages}${unreadCount > 0 ? ` (${unreadCount})` : ""}`, icon: "💬" },
+    { id: "products", label: t.myProducts, icon: "📦" },
+    { id: "profile", label: t.myProfile, icon: "🏭" },
+    { id: "settings", label: t.settings, icon: "⚙️" },
+  ];
 
   if (!user) return (
     <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
@@ -1744,6 +1757,7 @@ function DashboardPage() {
 function AuthPage() {
   const { signIn, signUp } = useAuth();
   const { go } = useNav();
+  const { t } = useLang();
   const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -1768,25 +1782,25 @@ function AuthPage() {
           <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#7c3aed,#6d28d9)", display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ color: "#fff", fontFamily: "Sora,sans-serif", fontWeight: 800, fontSize: 16 }}>U</span></div>
           <span style={{ fontFamily: "Sora,sans-serif", fontWeight: 800, fontSize: 20 }}>Usool</span>
         </div>
-        <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 22, fontWeight: 800, marginBottom: 6 }}>{mode === "login" ? "Welcome back" : "Create account"}</h2>
-        <p style={{ color: "#94a3b8", fontSize: 14, marginBottom: 24 }}>{mode === "login" ? "Sign in to your account" : "Join Usool for free"}</p>
+        <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 22, fontWeight: 800, marginBottom: 6 }}>{mode === "login" ? t.welcomeBack : t.createAccount}</h2>
+        <p style={{ color: "#94a3b8", fontSize: 14, marginBottom: 24 }}>{mode === "login" ? t.signInSub : t.joinFreeTitle}</p>
         {error && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626", padding: "10px 14px", borderRadius: 10, fontSize: 13, marginBottom: 16 }}>{error}</div>}
         {success && <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#16a34a", padding: "10px 14px", borderRadius: 10, fontSize: 13, marginBottom: 16 }}>{success}</div>}
         {mode === "signup" && (
           <>
-            <div style={{ marginBottom: 14 }}><label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Full Name</label><input value={name} onChange={e => setName(e.target.value)} placeholder="Your name" style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif" }} /></div>
-            <div style={{ marginBottom: 14 }}><label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>I am a</label><div style={{ display: "flex", gap: 10 }}>{["buyer", "supplier"].map(r => (<button key={r} onClick={() => setRole(r)} style={{ flex: 1, padding: 9, borderRadius: 10, border: `1.5px solid ${role === r ? "#7c3aed" : "#e2e8f0"}`, background: role === r ? "#f5f3ff" : "#fff", color: role === r ? "#7c3aed" : "#64748b", fontFamily: "Manrope,sans-serif", fontWeight: 600, fontSize: 14, cursor: "pointer", textTransform: "capitalize" }}>{r}</button>))}</div></div>
+            <div style={{ marginBottom: 14 }}><label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>{t.fullName}</label><input value={name} onChange={e => setName(e.target.value)} placeholder="Your name" style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif" }} /></div>
+            <div style={{ marginBottom: 14 }}><label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>{t.iAm}</label><div style={{ display: "flex", gap: 10 }}>{["buyer", "supplier"].map(r => (<button key={r} onClick={() => setRole(r)} style={{ flex: 1, padding: 9, borderRadius: 10, border: `1.5px solid ${role === r ? "#7c3aed" : "#e2e8f0"}`, background: role === r ? "#f5f3ff" : "#fff", color: role === r ? "#7c3aed" : "#64748b", fontFamily: "Manrope,sans-serif", fontWeight: 600, fontSize: 14, cursor: "pointer", textTransform: "capitalize" }}>{t[r]}</button>))}</div></div>
           </>
         )}
-        <div style={{ marginBottom: 14 }}><label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Email</label><input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif" }} /></div>
-        <div style={{ marginBottom: 20 }}><label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Password</label><input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif" }} /></div>
+        <div style={{ marginBottom: 14 }}><label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>{t.email}</label><input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif" }} /></div>
+        <div style={{ marginBottom: 20 }}><label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>{t.password}</label><input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif" }} /></div>
         <button onClick={handle} disabled={loading} style={{ width: "100%", background: "#7c3aed", color: "#fff", border: "none", padding: 13, borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", fontFamily: "Manrope,sans-serif", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, boxShadow: "0 4px 16px rgba(124,58,237,0.3)", opacity: loading ? .7 : 1 }}>
-          {loading ? <Spinner /> : mode === "login" ? "Sign In" : "Create Account"}
+          {loading ? <Spinner /> : mode === "login" ? t.signIn : t.createAccount}
         </button>
         <p style={{ textAlign: "center", fontSize: 14, color: "#94a3b8" }}>
-          {mode === "login" ? "No account? " : "Already have one? "}
+          {mode === "login" ? t.noAccount + " " : t.alreadyHave + " "}
           <button onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(""); setSuccess(""); }} style={{ color: "#7c3aed", fontWeight: 700, background: "none", border: "none", cursor: "pointer", fontSize: 14 }}>
-            {mode === "login" ? "Sign up" : "Sign in"}
+            {mode === "login" ? t.signUp : t.signIn}
           </button>
         </p>
       </div>
