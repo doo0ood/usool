@@ -194,7 +194,7 @@ function Navbar() {
 
           <div style={{ flex: 1, maxWidth: 380, position: "relative" }}>
             <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 15 }}>🔍</span>
-            <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === "Enter" && go("products", { search })}
+            <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && search.trim()) go("products", { search }); }}
               placeholder="Search products, suppliers..."
               style={{ width: "100%", padding: "8px 12px 8px 36px", borderRadius: 12, border: "none", background: "#f1f5f9", fontSize: 14, fontFamily: "Manrope,sans-serif" }} />
           </div>
@@ -520,10 +520,33 @@ function ProductsPage({ initCategory = "", initSearch = "" }) {
   const { go } = useNav();
   const [selectedCategory, setSelectedCategory] = useState(initCategory);
   const [search, setSearch] = useState(initSearch);
+  const [realProducts, setRealProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = products.filter(p => {
+  useEffect(() => { loadRealProducts(); }, []);
+
+  async function loadRealProducts() {
+    const { data } = await supabase.from("products").select("*, suppliers(company_name, emirate)").eq("status", "Active");
+    setRealProducts(data || []);
+    setLoading(false);
+  }
+
+  // Combine real products with mock products, real ones first
+  const allProducts = [
+    ...realProducts.map(p => ({
+      id: p.id, title: p.name, category: p.tag?.toLowerCase() || "other",
+      price: p.price || "Contact for price", moq: p.moq || "Ask supplier",
+      supplier: p.suppliers?.company_name || "UAE Supplier",
+      supplierId: p.supplier_id, country: UAE,
+      rating: 4.5, image: p.image_url || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
+      verified: true, isReal: true,
+    })),
+    ...products,
+  ];
+
+  const filtered = allProducts.filter(p => {
     const matchCat = !selectedCategory || p.category === selectedCategory;
-    const matchSearch = !search || p.title.toLowerCase().includes(search.toLowerCase()) || p.supplier.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = !search || p.title?.toLowerCase().includes(search.toLowerCase()) || p.supplier?.toLowerCase().includes(search.toLowerCase());
     return matchCat && matchSearch;
   });
 
@@ -569,8 +592,9 @@ function ProductsPage({ initCategory = "", initSearch = "" }) {
             </div>
           </aside>
           <div style={{ flex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(210px,1fr))", gap: 18, alignContent: "start" }}>
-            {filtered.map(p => <ProductCard key={p.id} product={p} onClick={() => go("productDetail", { productId: p.id })} />)}
-            {filtered.length === 0 && <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 60, color: "#94a3b8" }}><div style={{ fontSize: 40, marginBottom: 12 }}>🔍</div><div style={{ fontWeight: 600 }}>No products found</div></div>}
+            {loading ? <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 60 }}><Spinner /></div> :
+            filtered.map(p => <ProductCard key={p.id} product={p} onClick={() => go("productDetail", { productId: p.id })} />)}
+            {!loading && filtered.length === 0 && <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 60, color: "#94a3b8" }}><div style={{ fontSize: 40, marginBottom: 12 }}>🔍</div><div style={{ fontWeight: 600 }}>No products found</div></div>}
           </div>
         </div>
       </div>
@@ -966,7 +990,113 @@ function AdminPage() {
   );
 }
 
-// ─── SUPPLIER REGISTRATION ────────────────────────────────────────────────────
+// ─── SUPPLIER PRODUCT MANAGER ────────────────────────────────────────────────
+function SupplierProductManager({ supplierId }) {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ name: "", description: "", price: "", moq: "", lead_time: "", tag: "" });
+  const [imageFile, setImageFile] = useState(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => { if (supplierId) loadProducts(); }, [supplierId]);
+
+  async function loadProducts() {
+    const { data } = await supabase.from("products").select("*").eq("supplier_id", supplierId).order("created_at", { ascending: false });
+    setProducts(data || []);
+    setLoading(false);
+  }
+
+  async function handleAdd() {
+    if (!form.name.trim()) { setError("Product name is required."); return; }
+    setSaving(true); setError("");
+    let image_url = "";
+    if (imageFile) {
+      const ext = imageFile.name.split(".").pop();
+      const path = `products/${supplierId}/${Date.now()}.${ext}`;
+      const { error: uploadErr } = await supabase.storage.from("usool-images").upload(path, imageFile);
+      if (!uploadErr) {
+        const { data: urlData } = supabase.storage.from("usool-images").getPublicUrl(path);
+        image_url = urlData.publicUrl;
+      }
+    }
+    await supabase.from("products").insert({ supplier_id: supplierId, name: form.name, description: form.description, price: form.price, moq: form.moq, lead_time: form.lead_time, tag: form.tag, image_url, status: "Active" });
+    setForm({ name: "", description: "", price: "", moq: "", lead_time: "", tag: "" });
+    setImageFile(null); setShowForm(false); setSaving(false);
+    loadProducts();
+  }
+
+  async function deleteProduct(id) {
+    if (!confirm("Delete this product?")) return;
+    await supabase.from("products").delete().eq("id", id);
+    setProducts(prev => prev.filter(p => p.id !== id));
+  }
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 20, fontWeight: 700 }}>My Products ({products.length})</h2>
+        <button onClick={() => setShowForm(!showForm)} style={{ background: "#7c3aed", color: "#fff", border: "none", padding: "10px 20px", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>
+          {showForm ? "Cancel" : "+ Add Product"}
+        </button>
+      </div>
+
+      {showForm && (
+        <div style={{ background: "#f5f3ff", border: "1px solid #ede9fe", borderRadius: 16, padding: 24, marginBottom: 24 }}>
+          <h3 style={{ fontFamily: "Sora,sans-serif", fontWeight: 700, marginBottom: 16, fontSize: 16 }}>New Product</h3>
+          {error && <div style={{ background: "#fef2f2", color: "#dc2626", padding: "10px 14px", borderRadius: 8, fontSize: 13, marginBottom: 14 }}>{error}</div>}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 20px" }}>
+            {[["Product Name *", "name", "e.g. Cotton Fabric Rolls"], ["Price", "price", "e.g. AED 50 - 200"], ["MOQ", "moq", "e.g. 100 meters"], ["Lead Time", "lead_time", "e.g. 1-2 weeks"], ["Tag/Category", "tag", "e.g. Textiles"]].map(([label, key, ph]) => (
+              <div key={key} style={{ marginBottom: 14 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>{label}</label>
+                <input value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={ph}
+                  style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif" }} />
+              </div>
+            ))}
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Product Image</label>
+              <input type="file" accept="image/*" onChange={e => setImageFile(e.target.files[0])}
+                style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 13, fontFamily: "Manrope,sans-serif", background: "#fff" }} />
+            </div>
+          </div>
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>Description</label>
+            <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={3} placeholder="Describe your product..."
+              style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 14, fontFamily: "Manrope,sans-serif", resize: "vertical" }} />
+          </div>
+          <button onClick={handleAdd} disabled={saving} style={{ background: "#7c3aed", color: "#fff", border: "none", padding: "11px 28px", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: saving ? "not-allowed" : "pointer", fontFamily: "Manrope,sans-serif", display: "flex", alignItems: "center", gap: 8 }}>
+            {saving ? <Spinner /> : "Save Product"}
+          </button>
+        </div>
+      )}
+
+      {loading ? <div style={{ textAlign: "center", padding: 40 }}><Spinner /></div> :
+        products.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "40px 0", color: "#94a3b8", background: "#fafafa", borderRadius: 12 }}>
+            <div style={{ fontSize: 40, marginBottom: 10 }}>📦</div>
+            <p style={{ fontWeight: 600 }}>No products yet</p>
+            <p style={{ fontSize: 13, marginTop: 4 }}>Click "+ Add Product" to add your first product</p>
+          </div>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: 16 }}>
+            {products.map(p => (
+              <div key={p.id} style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 14, overflow: "hidden" }}>
+                {p.image_url && <img src={p.image_url} alt={p.name} style={{ width: "100%", height: 140, objectFit: "cover" }} />}
+                {!p.image_url && <div style={{ height: 100, background: "#f5f3ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36 }}>📦</div>}
+                <div style={{ padding: 14 }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{p.name}</div>
+                  {p.price && <div style={{ color: "#7c3aed", fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{p.price}</div>}
+                  {p.moq && <div style={{ fontSize: 12, color: "#94a3b8", marginBottom: 8 }}>MOQ: {p.moq}</div>}
+                  <button onClick={() => deleteProduct(p.id)} style={{ background: "#fef2f2", color: "#dc2626", border: "none", padding: "6px 12px", borderRadius: 7, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "Manrope,sans-serif", width: "100%" }}>Delete</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+    </div>
+  );
+}
 function SupplierRegistrationPage() {
   const { user, profile } = useAuth();
   const { go } = useNav();
@@ -1162,6 +1292,28 @@ function SuppliersPage() {
   );
 }
 
+// ─── SUPPLIER PRODUCT MANAGER WRAPPER ────────────────────────────────────────
+function SupplierProductManagerWrapper({ user }) {
+  const [supplierId, setSupplierId] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from("suppliers").select("id").eq("profile_id", user.id).single().then(({ data }) => {
+      if (data) setSupplierId(data.id);
+      setLoading(false);
+    });
+  }, [user]);
+
+  if (loading) return <div style={{ textAlign: "center", padding: 40 }}><Spinner /></div>;
+  if (!supplierId) return (
+    <div style={{ textAlign: "center", padding: "60px 0", color: "#94a3b8" }}>
+      <div style={{ fontSize: 40, marginBottom: 12 }}>🏭</div>
+      <p>You need an approved supplier profile to manage products.</p>
+    </div>
+  );
+  return <SupplierProductManager supplierId={supplierId} />;
+}
+
 // ─── DASHBOARD ────────────────────────────────────────────────────────────────
 function DashboardPage() {
   const { user, profile } = useAuth();
@@ -1196,7 +1348,7 @@ function DashboardPage() {
   }
 
   const unreadCount = realMessages.filter(m => !m.read).length;
-  const navItems = [{ id: "overview", label: "Overview", icon: "📊" }, { id: "inquiries", label: "My Inquiries", icon: "📋" }, { id: "messages", label: `Messages${unreadCount > 0 ? ` (${unreadCount})` : ""}`, icon: "💬" }, { id: "saved", label: "Saved Products", icon: "❤️" }, { id: "settings", label: "Settings", icon: "⚙️" }];
+  const navItems = [{ id: "overview", label: "Overview", icon: "📊" }, { id: "inquiries", label: "My Inquiries", icon: "📋" }, { id: "messages", label: `Messages${unreadCount > 0 ? ` (${unreadCount})` : ""}`, icon: "💬" }, { id: "products", label: "My Products", icon: "📦" }, { id: "saved", label: "Saved Suppliers", icon: "❤️" }, { id: "settings", label: "Settings", icon: "⚙️" }];
 
   if (!user) return (
     <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
@@ -1298,7 +1450,13 @@ function DashboardPage() {
     );
   }
 
-  return (
+  if (activeView === "products") return (
+    <div>
+      <SupplierProductManagerWrapper user={user} />
+    </div>
+  );
+
+  if (activeView === "saved") return <div style={{ textAlign: "center", padding: "80px 0", color: "#94a3b8" }}><div style={{ fontSize: 48, marginBottom: 12 }}>❤️</div><p style={{ fontSize: 16 }}>No saved suppliers yet.</p></div>;
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <div style={{ width: 220, background: "#fff", borderRight: "1px solid #f1f5f9", flexShrink: 0, padding: "24px 12px" }}>
         <div style={{ padding: "0 8px", marginBottom: 24, fontFamily: "Sora,sans-serif", fontWeight: 800, fontSize: 16 }}>My Account</div>
