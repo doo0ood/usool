@@ -66,6 +66,108 @@ const messages = [
   { id: "m4", from: "Khaleeji Textiles", preview: "Please find attached our latest catalog...", time: "2 days ago", unread: false },
 ];
 
+// ─── LANGUAGE CONTEXT ────────────────────────────────────────────────────────
+const LangContext = createContext(null);
+function useLang() { return useContext(LangContext); }
+
+const translations = {
+  en: {
+    dir: "ltr",
+    home: "Home", browse: "Browse", suppliers: "Suppliers", dashboard: "Dashboard",
+    admin: "Admin 👑", login: "Log In", joinFree: "Join Free", signOut: "Sign Out",
+    heroTitle1: "Your Gateway to", heroTitle2: "Gulf Trade",
+    heroSub: "Connect with verified UAE suppliers across healthcare, packaging, textiles, machinery, agriculture and electronics. All in one place.",
+    heroSearch: "What are you looking for?", search: "Search",
+    popular: "Popular:", statsSuppliers: "UAE-Based", statsLocal: "100% Local Suppliers",
+    statsIndustries: "6", statsIndustriesLabel: "Industries",
+    statsFree: "Free", statsFreeLabel: "To Browse & Contact",
+    statsVerified: "Verified", statsVerifiedLabel: "Trusted Suppliers",
+    exploreCategories: "Explore Categories", exploreSub: "Browse thousands of products across every industry",
+    trending: "Trending Products", trendingSub: "Top picks from UAE suppliers", viewAll: "View All →",
+    howItWorks: "How It Works", howSub: "Start trading in three simple steps",
+    browse: "Browse", browseSub: "Search thousands of products and verified suppliers across the UAE",
+    connect: "Connect", connectSub: "Send inquiries, request quotes, and message suppliers directly",
+    trade: "Trade", tradeSub: "Negotiate deals, place orders, and grow your UAE trade network",
+    ctaTitle: "Ready to Grow Your UAE Trade?", ctaSub: "Join thousands of businesses already trading on Usool. Sign up free today.",
+    joinBuyer: "Join as Buyer", joinSupplier: "Join as Supplier",
+    findSuppliers: "Find Suppliers →", registerSupplier: "+ Register as Supplier",
+    contactSupplier: "💬 Contact Supplier", requestCatalog: "Request Catalog",
+    sendMessage: "💬 Send Message", cancel: "Cancel",
+    subject: "Subject", message: "Message", messageSent: "Message Sent!",
+    about: "About", products: "Products", noProducts: "No products listed yet.",
+    signIn: "Sign In", createAccount: "Create Account", welcomeBack: "Welcome back",
+    signInSub: "Sign in to your account", joinFreeTitle: "Join Usool for free",
+    email: "Email", password: "Password", fullName: "Full Name", iAm: "I am a",
+    buyer: "buyer", supplier: "supplier", noAccount: "No account?", signUp: "Sign up",
+    alreadyHave: "Already have one?", overview: "Overview", myInquiries: "My Inquiries",
+    messages: "Messages", myProducts: "My Products", myProfile: "My Profile",
+    settings: "Settings", saveProfile: "Save Profile", uploadLogo: "Upload Logo",
+    changeLogo: "Change Logo", companyInfo: "Company Information",
+    pendingApproval: "⏳ Pending Approval", active: "✅ Active", verified: "✓ Verified",
+    backToHome: "Back to Home", applicationSubmitted: "Application Submitted!",
+    applicationSub: "Your supplier profile is under review. Once approved, your business will appear on USOOL.",
+    adminPanel: "👑 Admin Panel", manageUsool: "Manage your USOOL platform",
+    allUsers: "All Users", allMessages: "All Messages", recentSignups: "Recent Signups",
+    approve: "✓ Approve", reject: "✕ Reject", markVerified: "✓ Mark Verified", removeVerified: "Remove Verified",
+  },
+  ar: {
+    dir: "rtl",
+    home: "الرئيسية", browse: "تصفح", suppliers: "الموردون", dashboard: "لوحتي",
+    admin: "الإدارة 👑", login: "تسجيل الدخول", joinFree: "انضم مجاناً", signOut: "تسجيل الخروج",
+    heroTitle1: "بوابتك إلى", heroTitle2: "التجارة الإماراتية",
+    heroSub: "تواصل مع موردين إماراتيين موثوقين في الرعاية الصحية والتعبئة والمنسوجات والآلات والزراعة والإلكترونيات. كل شيء في مكان واحد.",
+    heroSearch: "ماذا تبحث عن؟", search: "بحث",
+    popular: "الأكثر بحثاً:", statsSuppliers: "إماراتي", statsLocal: "١٠٠٪ موردون محليون",
+    statsIndustries: "٦", statsIndustriesLabel: "صناعات",
+    statsFree: "مجاني", statsFreeLabel: "للتصفح والتواصل",
+    statsVerified: "موثوق", statsVerifiedLabel: "موردون معتمدون",
+    exploreCategories: "استكشف الفئات", exploreSub: "تصفح آلاف المنتجات عبر كل الصناعات",
+    trending: "المنتجات الرائجة", trendingSub: "أفضل الاختيارات من موردي الإمارات", viewAll: "عرض الكل →",
+    howItWorks: "كيف يعمل", howSub: "ابدأ التداول في ثلاث خطوات بسيطة",
+    browse: "تصفح", browseSub: "ابحث عن آلاف المنتجات والموردين الموثوقين في الإمارات",
+    connect: "تواصل", connectSub: "أرسل استفسارات واطلب عروض أسعار وراسل الموردين مباشرة",
+    trade: "تعامل", tradeSub: "تفاوض على الصفقات وقدم الطلبات وطور شبكة تجارتك",
+    ctaTitle: "هل أنت مستعد لتطوير تجارتك؟", ctaSub: "انضم لآلاف الشركات التي تتداول على أصول. سجل مجاناً اليوم.",
+    joinBuyer: "انضم كمشترٍ", joinSupplier: "انضم كمورد",
+    findSuppliers: "ابحث عن موردين ←", registerSupplier: "+ سجل كمورد",
+    contactSupplier: "💬 تواصل مع المورد", requestCatalog: "طلب الكتالوج",
+    sendMessage: "💬 إرسال رسالة", cancel: "إلغاء",
+    subject: "الموضوع", message: "الرسالة", messageSent: "تم إرسال الرسالة!",
+    about: "عن الشركة", products: "المنتجات", noProducts: "لا توجد منتجات حتى الآن.",
+    signIn: "تسجيل الدخول", createAccount: "إنشاء حساب", welcomeBack: "مرحباً بعودتك",
+    signInSub: "سجل دخولك إلى حسابك", joinFreeTitle: "انضم إلى أصول مجاناً",
+    email: "البريد الإلكتروني", password: "كلمة المرور", fullName: "الاسم الكامل", iAm: "أنا",
+    buyer: "مشترٍ", supplier: "مورد", noAccount: "لا حساب؟", signUp: "سجل الآن",
+    alreadyHave: "لديك حساب؟", overview: "نظرة عامة", myInquiries: "استفساراتي",
+    messages: "الرسائل", myProducts: "منتجاتي", myProfile: "ملفي الشخصي",
+    settings: "الإعدادات", saveProfile: "حفظ الملف", uploadLogo: "رفع الشعار",
+    changeLogo: "تغيير الشعار", companyInfo: "معلومات الشركة",
+    pendingApproval: "⏳ قيد المراجعة", active: "✅ نشط", verified: "✓ موثوق",
+    backToHome: "العودة للرئيسية", applicationSubmitted: "تم تقديم الطلب!",
+    applicationSub: "ملفك الشخصي قيد المراجعة. بعد الموافقة، ستظهر شركتك على أصول.",
+    adminPanel: "👑 لوحة الإدارة", manageUsool: "إدارة منصة أصول",
+    allUsers: "جميع المستخدمين", allMessages: "جميع الرسائل", recentSignups: "آخر التسجيلات",
+    approve: "✓ موافقة", reject: "✕ رفض", markVerified: "✓ تحقق", removeVerified: "إزالة التحقق",
+  }
+};
+
+function LangProvider({ children }) {
+  const [lang, setLang] = useState(() => localStorage.getItem("usool-lang") || "en");
+  const t = translations[lang];
+  function toggleLang() {
+    const next = lang === "en" ? "ar" : "en";
+    setLang(next);
+    localStorage.setItem("usool-lang", next);
+    document.documentElement.dir = translations[next].dir;
+    document.documentElement.lang = next;
+  }
+  useEffect(() => {
+    document.documentElement.dir = t.dir;
+    document.documentElement.lang = lang;
+  }, [lang]);
+  return <LangContext.Provider value={{ lang, t, toggleLang }}>{children}</LangContext.Provider>;
+}
+
 // ─── CONTEXTS ────────────────────────────────────────────────────────────────
 const AuthContext = createContext(null);
 const NavContext = createContext(null);
@@ -178,6 +280,7 @@ function ContactModal({ supplier, onClose }) {
 function Navbar() {
   const { user, profile, signOut } = useAuth();
   const { go } = useNav();
+  const { lang, t, toggleLang } = useLang();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -193,28 +296,34 @@ function Navbar() {
           </button>
 
           <div style={{ flex: 1, maxWidth: 380, position: "relative" }}>
-            <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 15 }}>🔍</span>
+            <span style={{ position: "absolute", left: lang === "ar" ? "auto" : 12, right: lang === "ar" ? 12 : "auto", top: "50%", transform: "translateY(-50%)", fontSize: 15 }}>🔍</span>
             <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && search.trim()) go("products", { search }); }}
-              placeholder="Search products, suppliers..."
-              style={{ width: "100%", padding: "8px 12px 8px 36px", borderRadius: 12, border: "none", background: "#f1f5f9", fontSize: 14, fontFamily: "Manrope,sans-serif" }} />
+              placeholder={t.heroSearch}
+              style={{ width: "100%", padding: lang === "ar" ? "8px 36px 8px 12px" : "8px 12px 8px 36px", borderRadius: 12, border: "none", background: "#f1f5f9", fontSize: 14, fontFamily: "Manrope,sans-serif", direction: t.dir, textAlign: lang === "ar" ? "right" : "left" }} />
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 2, marginLeft: "auto" }}>
-            {[["Products", "products"], ["Suppliers", "suppliers"], ["Dashboard", "dashboard"], ...(profile?.role === "admin" ? [["Admin 👑", "admin"]] : [])].map(([label, page]) => (
+          <div style={{ display: "flex", alignItems: "center", gap: 2, marginLeft: lang === "ar" ? 0 : "auto", marginRight: lang === "ar" ? "auto" : 0 }}>
+            {[[t.home, "home"], [t.browse, "products"], [t.suppliers, "suppliers"], [t.dashboard, "dashboard"], ...(profile?.role === "admin" ? [[t.admin, "admin"]] : [])].map(([label, page]) => (
               <button key={page} onClick={() => go(page)}
-                style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 12px", borderRadius: 8, fontSize: 14, fontWeight: 500, color: "#64748b", fontFamily: "Manrope,sans-serif" }}
+                style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 12px", borderRadius: 8, fontSize: 14, fontWeight: 500, color: "#64748b", fontFamily: lang === "ar" ? "sans-serif" : "Manrope,sans-serif" }}
                 onMouseEnter={e => { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.color = "#0f172a"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#64748b"; }}>
                 {label}
               </button>
             ))}
             <div style={{ width: 1, height: 24, background: "#e2e8f0", margin: "0 8px" }} />
+            {/* Language Toggle */}
+            <button onClick={toggleLang}
+              style={{ background: "#f5f3ff", border: "1px solid #ede9fe", cursor: "pointer", padding: "6px 12px", borderRadius: 8, fontSize: 13, fontWeight: 700, color: "#7c3aed", fontFamily: "Manrope,sans-serif" }}>
+              {lang === "en" ? "عربي" : "EN"}
+            </button>
+            <div style={{ width: 1, height: 24, background: "#e2e8f0", margin: "0 8px" }} />
             {user ? (
-              <button onClick={signOut} style={{ background: "none", border: "1px solid #e2e8f0", cursor: "pointer", padding: "7px 16px", borderRadius: 10, fontSize: 14, fontWeight: 600, color: "#64748b", fontFamily: "Manrope,sans-serif" }}>Sign Out</button>
+              <button onClick={signOut} style={{ background: "none", border: "1px solid #e2e8f0", cursor: "pointer", padding: "7px 16px", borderRadius: 10, fontSize: 14, fontWeight: 600, color: "#64748b", fontFamily: "Manrope,sans-serif" }}>{t.signOut}</button>
             ) : (
               <>
-                <button onClick={() => go("auth")} style={{ background: "none", border: "none", cursor: "pointer", padding: "7px 14px", fontSize: 14, fontWeight: 600, color: "#64748b", fontFamily: "Manrope,sans-serif" }}>Log In</button>
-                <button onClick={() => go("auth")} style={{ background: "#7c3aed", border: "none", cursor: "pointer", padding: "8px 18px", borderRadius: 10, fontSize: 14, fontWeight: 700, color: "#fff", fontFamily: "Manrope,sans-serif", boxShadow: "0 4px 12px rgba(124,58,237,0.3)" }}>Join Free</button>
+                <button onClick={() => go("auth")} style={{ background: "none", border: "none", cursor: "pointer", padding: "7px 14px", fontSize: 14, fontWeight: 600, color: "#64748b", fontFamily: "Manrope,sans-serif" }}>{t.login}</button>
+                <button onClick={() => go("auth")} style={{ background: "#7c3aed", border: "none", cursor: "pointer", padding: "8px 18px", borderRadius: 10, fontSize: 14, fontWeight: 700, color: "#fff", fontFamily: "Manrope,sans-serif", boxShadow: "0 4px 12px rgba(124,58,237,0.3)" }}>{t.joinFree}</button>
               </>
             )}
           </div>
@@ -290,6 +399,7 @@ function ProductCard({ product, onClick }) {
 // ─── HOME PAGE ────────────────────────────────────────────────────────────────
 function HomePage() {
   const { go } = useNav();
+  const { t, lang } = useLang();
   const [search, setSearch] = useState("");
 
   return (
@@ -303,25 +413,25 @@ function HomePage() {
             🇦🇪 UAE's #1 B2B Supplier Marketplace
           </div>
           <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 62, fontWeight: 800, lineHeight: 1.08, color: "#0f172a", marginBottom: 24 }}>
-            Your Gateway to{" "}
-            <span style={{ background: "linear-gradient(135deg,#7c3aed,#059669)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Gulf Trade</span>
+            {t.heroTitle1}{" "}
+            <span style={{ background: "linear-gradient(135deg,#7c3aed,#059669)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{t.heroTitle2}</span>
           </h1>
           <p style={{ fontSize: 18, color: "#64748b", lineHeight: 1.7, maxWidth: 580, margin: "0 auto 36px" }}>
-            Connect with verified UAE suppliers across healthcare, packaging, textiles, machinery, agriculture and electronics. All in one place.
+            {t.heroSub}
           </p>
-          <div style={{ display: "flex", gap: 12, maxWidth: 520, margin: "0 auto 24px" }}>
+          <div style={{ display: "flex", gap: 12, maxWidth: 520, margin: "0 auto 24px", flexDirection: lang === "ar" ? "row-reverse" : "row" }}>
             <div style={{ position: "relative", flex: 1 }}>
-              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16 }}>🔍</span>
+              <span style={{ position: "absolute", left: lang === "ar" ? "auto" : 14, right: lang === "ar" ? 14 : "auto", top: "50%", transform: "translateY(-50%)", fontSize: 16 }}>🔍</span>
               <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === "Enter" && go("products")}
-                placeholder="What are you looking for?"
-                style={{ width: "100%", padding: "14px 14px 14px 42px", borderRadius: 14, border: "1px solid #e2e8f0", fontSize: 15, fontFamily: "Manrope,sans-serif", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }} />
+                placeholder={t.heroSearch}
+                style={{ width: "100%", padding: lang === "ar" ? "14px 42px 14px 14px" : "14px 14px 14px 42px", borderRadius: 14, border: "1px solid #e2e8f0", fontSize: 15, fontFamily: "Manrope,sans-serif", boxShadow: "0 4px 20px rgba(0,0,0,0.06)", direction: t.dir, textAlign: lang === "ar" ? "right" : "left" }} />
             </div>
-            <button onClick={() => go("products")} style={{ background: "#7c3aed", color: "#fff", border: "none", padding: "14px 28px", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif", boxShadow: "0 4px 16px rgba(124,58,237,0.35)", whiteSpace: "nowrap" }}>Search</button>
+            <button onClick={() => go("products")} style={{ background: "#7c3aed", color: "#fff", border: "none", padding: "14px 28px", borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif", boxShadow: "0 4px 16px rgba(124,58,237,0.35)", whiteSpace: "nowrap" }}>{t.search}</button>
           </div>
           <div style={{ display: "flex", gap: 10, justifyContent: "center", fontSize: 13, color: "#94a3b8", flexWrap: "wrap" }}>
-            <span>Popular:</span>
-            {["Healthcare", "Packaging", "Textiles", "Machinery"].map(t => (
-              <button key={t} onClick={() => go("products")} style={{ background: "none", border: "none", cursor: "pointer", color: "#7c3aed", fontSize: 13, textDecoration: "underline", fontFamily: "Manrope,sans-serif" }}>{t}</button>
+            <span>{t.popular}</span>
+            {["Healthcare", "Packaging", "Textiles", "Machinery"].map(term => (
+              <button key={term} onClick={() => go("products")} style={{ background: "none", border: "none", cursor: "pointer", color: "#7c3aed", fontSize: 13, textDecoration: "underline", fontFamily: "Manrope,sans-serif" }}>{term}</button>
             ))}
           </div>
         </div>
@@ -330,7 +440,7 @@ function HomePage() {
       {/* Stats */}
       <section style={{ borderTop: "1px solid #f1f5f9", borderBottom: "1px solid #f1f5f9" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 24px", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 24, textAlign: "center" }}>
-          {[["UAE Only", "100% Local Suppliers", "🇦🇪"], ["6", "Industries", "🏭"], ["Free", "To Browse & Contact", "✅"], ["Verified", "Trusted Suppliers", "🔒"]].map(([val, label, icon]) => (
+          {[[t.statsSuppliers, t.statsLocal, "🇦🇪"], [t.statsIndustries, t.statsIndustriesLabel, "🏭"], [t.statsFree, t.statsFreeLabel, "✅"], [t.statsVerified, t.statsVerifiedLabel, "🔒"]].map(([val, label, icon]) => (
             <div key={label}>
               <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
               <div style={{ fontFamily: "Sora,sans-serif", fontSize: 28, fontWeight: 800, color: "#0f172a" }}>{val}</div>
@@ -344,8 +454,8 @@ function HomePage() {
       <section style={{ padding: "80px 24px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 36, fontWeight: 800, color: "#0f172a", marginBottom: 8 }}>Explore Categories</h2>
-            <p style={{ color: "#94a3b8", fontSize: 16 }}>Browse thousands of products across every industry</p>
+            <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 36, fontWeight: 800, color: "#0f172a", marginBottom: 8 }}>{t.exploreCategories}</h2>
+            <p style={{ color: "#94a3b8", fontSize: 16 }}>{t.exploreSub}</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(140px,1fr))", gap: 14 }}>
             {categories.map(cat => (
@@ -1763,10 +1873,12 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <RouterProvider>
-        <AppContent />
-      </RouterProvider>
-    </AuthProvider>
+    <LangProvider>
+      <AuthProvider>
+        <RouterProvider>
+          <AppContent />
+        </RouterProvider>
+      </AuthProvider>
+    </LangProvider>
   );
 }
