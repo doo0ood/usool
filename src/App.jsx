@@ -187,6 +187,99 @@ const globalCSS = `
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
   input:focus, textarea:focus, select:focus { outline: 2px solid #7c3aed; outline-offset: 1px; }
+
+  /* ── MOBILE RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .desktop-only { display: none !important; }
+    .mobile-bottom-nav { display: block !important; }
+    .mobile-lang { display: block !important; }
+    .mobile-join { display: block !important; }
+
+    /* Hero */
+    .hero-title { font-size: 36px !important; }
+    .hero-sub { font-size: 15px !important; }
+    .hero-section { padding: 56px 16px 48px !important; }
+    .hero-search-row { flex-direction: column !important; gap: 10px !important; }
+    .hero-search-row button { width: 100% !important; }
+
+    /* Stats */
+    .stats-grid { grid-template-columns: repeat(2,1fr) !important; gap: 12px !important; padding: 20px 16px !important; }
+
+    /* Categories */
+    .categories-grid { grid-template-columns: repeat(2,1fr) !important; gap: 10px !important; }
+    .categories-section { padding: 48px 16px !important; }
+
+    /* Products grid */
+    .products-grid { grid-template-columns: repeat(2,1fr) !important; gap: 12px !important; }
+    .trending-section { padding: 0 16px 48px !important; padding-top: 48px !important; }
+
+    /* For vendors/suppliers */
+    .two-col-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+    .two-col-section { padding: 48px 16px !important; }
+    .hide-on-mobile { display: none !important; }
+
+    /* How it works */
+    .how-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+    .how-section { padding: 48px 16px !important; }
+
+    /* Testimonials */
+    .testimonials-grid { grid-template-columns: 1fr !important; }
+    .testimonials-section { padding: 48px 16px !important; }
+
+    /* CTA */
+    .cta-section { padding: 48px 16px !important; }
+    .cta-buttons { flex-direction: column !important; align-items: center !important; }
+    .cta-buttons button { width: 100% !important; max-width: 320px !important; }
+
+    /* Suppliers page */
+    .suppliers-grid { grid-template-columns: 1fr !important; }
+    .suppliers-header { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+    .suppliers-filters { flex-direction: column !important; }
+
+    /* Supplier profile */
+    .profile-main-grid { grid-template-columns: 1fr !important; }
+    .profile-stats-grid { grid-template-columns: repeat(2,1fr) !important; }
+    .profile-banner { height: 140px !important; }
+
+    /* Product detail */
+    .product-detail-grid { grid-template-columns: 1fr !important; }
+    .pricing-tiers { grid-template-columns: 1fr !important; }
+
+    /* Dashboard */
+    .dashboard-layout { flex-direction: column !important; }
+    .dashboard-sidebar { width: 100% !important; flex-direction: row !important; overflow-x: auto !important; padding: 8px !important; border-right: none !important; border-bottom: 1px solid #f1f5f9 !important; }
+    .dashboard-sidebar button { flex-shrink: 0 !important; padding: 8px 12px !important; font-size: 12px !important; }
+    .dashboard-stats { grid-template-columns: repeat(2,1fr) !important; }
+
+    /* Admin */
+    .admin-stats { grid-template-columns: repeat(2,1fr) !important; }
+
+    /* Auth */
+    .auth-card { padding: 24px 20px !important; margin: 16px !important; }
+
+    /* Products page */
+    .products-layout { flex-direction: column !important; }
+    .products-sidebar { width: 100% !important; }
+    .products-page-grid { grid-template-columns: repeat(2,1fr) !important; }
+
+    /* Supplier registration */
+    .supplier-reg-form { grid-template-columns: 1fr !important; }
+
+    /* Footer */
+    .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
+    .footer-inner { padding: 40px 16px 24px !important; }
+
+    /* General spacing */
+    .page-container { padding: 24px 16px !important; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title { font-size: 28px !important; }
+    .products-grid { grid-template-columns: 1fr !important; }
+    .products-page-grid { grid-template-columns: 1fr !important; }
+    .categories-grid { grid-template-columns: repeat(2,1fr) !important; }
+    .footer-grid { grid-template-columns: 1fr !important; }
+  }
 `;
 
 // ─── SHARED ───────────────────────────────────────────────────────────────────
@@ -286,47 +379,70 @@ function Navbar() {
   const [search, setSearch] = useState("");
 
   return (
-    <nav style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(255,255,255,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid #f1f5f9" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
-        <div style={{ display: "flex", alignItems: "center", height: 64, gap: 24 }}>
-          <button onClick={() => go("home")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#7c3aed,#6d28d9)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(124,58,237,0.3)" }}>
-              <span style={{ color: "#fff", fontFamily: "Sora,sans-serif", fontWeight: 800, fontSize: 16 }}>U</span>
+    <nav style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(255,255,255,0.95)", backdropFilter: "blur(16px)", borderBottom: "1px solid #f1f5f9" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
+        <div style={{ display: "flex", alignItems: "center", height: 56, gap: 12 }}>
+          {/* Logo */}
+          <button onClick={() => go("home")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: "linear-gradient(135deg,#7c3aed,#6d28d9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ color: "#fff", fontFamily: "Sora,sans-serif", fontWeight: 800, fontSize: 14 }}>U</span>
             </div>
-            <span style={{ fontFamily: "Sora,sans-serif", fontWeight: 800, fontSize: 20, color: "#0f172a" }}>Usool</span>
+            <span style={{ fontFamily: "Sora,sans-serif", fontWeight: 800, fontSize: 18, color: "#0f172a" }}>Usool</span>
           </button>
 
-          <div style={{ flex: 1, maxWidth: 380, position: "relative" }}>
-            <span style={{ position: "absolute", left: lang === "ar" ? "auto" : 12, right: lang === "ar" ? 12 : "auto", top: "50%", transform: "translateY(-50%)", fontSize: 15 }}>🔍</span>
+          {/* Search - hidden on mobile */}
+          <div className="desktop-only" style={{ flex: 1, maxWidth: 340, position: "relative" }}>
+            <span style={{ position: "absolute", left: lang === "ar" ? "auto" : 12, right: lang === "ar" ? 12 : "auto", top: "50%", transform: "translateY(-50%)", fontSize: 14 }}>🔍</span>
             <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && search.trim()) go("products", { search }); }}
               placeholder={t.heroSearch}
-              style={{ width: "100%", padding: lang === "ar" ? "8px 36px 8px 12px" : "8px 12px 8px 36px", borderRadius: 12, border: "none", background: "#f1f5f9", fontSize: 14, fontFamily: "Manrope,sans-serif", direction: t.dir, textAlign: lang === "ar" ? "right" : "left" }} />
+              style={{ width: "100%", padding: lang === "ar" ? "7px 32px 7px 10px" : "7px 10px 7px 32px", borderRadius: 10, border: "none", background: "#f1f5f9", fontSize: 13, fontFamily: "Manrope,sans-serif" }} />
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 2, marginLeft: lang === "ar" ? 0 : "auto", marginRight: lang === "ar" ? "auto" : 0 }}>
+          {/* Nav links - hidden on mobile */}
+          <div className="desktop-only" style={{ display: "flex", alignItems: "center", gap: 0, marginLeft: lang === "ar" ? 0 : "auto", marginRight: lang === "ar" ? "auto" : 0 }}>
             {[[t.home, "home"], [t.browse, "products"], [t.suppliers, "suppliers"], [t.dashboard, "dashboard"], ...(profile?.role === "admin" ? [[t.admin, "admin"]] : [])].map(([label, page]) => (
               <button key={page} onClick={() => go(page)}
-                style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 12px", borderRadius: 8, fontSize: 14, fontWeight: 500, color: "#64748b", fontFamily: lang === "ar" ? "sans-serif" : "Manrope,sans-serif" }}
+                style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 10px", borderRadius: 8, fontSize: 13, fontWeight: 500, color: "#64748b", fontFamily: lang === "ar" ? "sans-serif" : "Manrope,sans-serif" }}
                 onMouseEnter={e => { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.color = "#0f172a"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#64748b"; }}>
                 {label}
               </button>
             ))}
-            <div style={{ width: 1, height: 24, background: "#e2e8f0", margin: "0 8px" }} />
-            {/* Language Toggle */}
-            <button onClick={toggleLang}
-              style={{ background: "#f5f3ff", border: "1px solid #ede9fe", cursor: "pointer", padding: "6px 12px", borderRadius: 8, fontSize: 13, fontWeight: 700, color: "#7c3aed", fontFamily: "Manrope,sans-serif" }}>
+            <div style={{ width: 1, height: 20, background: "#e2e8f0", margin: "0 6px" }} />
+            <button onClick={toggleLang} style={{ background: "#f5f3ff", border: "1px solid #ede9fe", cursor: "pointer", padding: "5px 10px", borderRadius: 8, fontSize: 12, fontWeight: 700, color: "#7c3aed" }}>
               {lang === "en" ? "عربي" : "EN"}
             </button>
-            <div style={{ width: 1, height: 24, background: "#e2e8f0", margin: "0 8px" }} />
+            <div style={{ width: 1, height: 20, background: "#e2e8f0", margin: "0 6px" }} />
             {user ? (
-              <button onClick={signOut} style={{ background: "none", border: "1px solid #e2e8f0", cursor: "pointer", padding: "7px 16px", borderRadius: 10, fontSize: 14, fontWeight: 600, color: "#64748b", fontFamily: "Manrope,sans-serif" }}>{t.signOut}</button>
+              <button onClick={signOut} style={{ background: "none", border: "1px solid #e2e8f0", cursor: "pointer", padding: "6px 14px", borderRadius: 8, fontSize: 13, fontWeight: 600, color: "#64748b" }}>{t.signOut}</button>
             ) : (
               <>
-                <button onClick={() => go("auth")} style={{ background: "none", border: "none", cursor: "pointer", padding: "7px 14px", fontSize: 14, fontWeight: 600, color: "#64748b", fontFamily: "Manrope,sans-serif" }}>{t.login}</button>
-                <button onClick={() => go("auth")} style={{ background: "#7c3aed", border: "none", cursor: "pointer", padding: "8px 18px", borderRadius: 10, fontSize: 14, fontWeight: 700, color: "#fff", fontFamily: "Manrope,sans-serif", boxShadow: "0 4px 12px rgba(124,58,237,0.3)" }}>{t.joinFree}</button>
+                <button onClick={() => go("auth")} style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 12px", fontSize: 13, fontWeight: 600, color: "#64748b" }}>{t.login}</button>
+                <button onClick={() => go("auth")} style={{ background: "#7c3aed", border: "none", cursor: "pointer", padding: "7px 16px", borderRadius: 8, fontSize: 13, fontWeight: 700, color: "#fff", boxShadow: "0 4px 12px rgba(124,58,237,0.3)" }}>{t.joinFree}</button>
               </>
             )}
+          </div>
+
+          {/* Mobile right side */}
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }} className="mobile-nav-right">
+            <button onClick={toggleLang} style={{ background: "#f5f3ff", border: "1px solid #ede9fe", cursor: "pointer", padding: "5px 10px", borderRadius: 8, fontSize: 12, fontWeight: 700, color: "#7c3aed", display: "none" }} className="mobile-lang">
+              {lang === "en" ? "عربي" : "EN"}
+            </button>
+            <button onClick={() => go("auth")} style={{ background: "#7c3aed", border: "none", cursor: "pointer", padding: "7px 14px", borderRadius: 8, fontSize: 13, fontWeight: 700, color: "#fff", display: "none" }} className="mobile-join">
+              {user ? t.dashboard : t.joinFree}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile bottom nav */}
+        <div style={{ display: "none", borderTop: "1px solid #f1f5f9", padding: "6px 0" }} className="mobile-bottom-nav">
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
+            {[[t.home, "home", "🏠"], [t.browse, "products", "📦"], [t.suppliers, "suppliers", "🏭"], [t.dashboard, "dashboard", "📊"]].map(([label, page, icon]) => (
+              <button key={page} onClick={() => go(page)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, padding: "4px 8px", color: "#64748b", fontSize: 10, fontFamily: "Manrope,sans-serif", fontWeight: 600 }}>
+                <span style={{ fontSize: 18 }}>{icon}</span>
+                {label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -338,8 +454,8 @@ function Navbar() {
 function Footer() {
   return (
     <footer style={{ background: "#0f172a", color: "#fff" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 24px 32px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 48 }}>
+      <div className="footer-inner" style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 24px 32px" }}>
+        <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 48 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
               <div style={{ width: 36, height: 36, borderRadius: 10, background: "#7c3aed", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -406,21 +522,21 @@ function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section style={{ position: "relative", overflow: "hidden", background: "linear-gradient(160deg,#f5f3ff 0%,#fff 55%)", padding: "96px 24px 80px", textAlign: "center" }}>
+      <section className="hero-section" style={{ position: "relative", overflow: "hidden", background: "linear-gradient(160deg,#f5f3ff 0%,#fff 55%)", padding: "80px 24px 64px", textAlign: "center" }}>
         <div style={{ position: "absolute", top: 0, right: 0, width: 500, height: 500, background: "#7c3aed", borderRadius: "50%", opacity: 0.04, transform: "translate(25%,-50%)", pointerEvents: "none" }} />
         <div style={{ position: "absolute", bottom: 0, left: 0, width: 400, height: 400, background: "#059669", borderRadius: "50%", opacity: 0.04, transform: "translate(-25%,50%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 720, margin: "0 auto", position: "relative", animation: "fadeUp .5s ease" }}>
           <div style={{ display: "inline-block", background: "#ede9fe", color: "#7c3aed", border: "1px solid #c4b5fd", padding: "6px 18px", borderRadius: 99, fontSize: 13, fontWeight: 700, marginBottom: 24 }}>
             🇦🇪 UAE's #1 B2B Supplier Marketplace
           </div>
-          <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 62, fontWeight: 800, lineHeight: 1.08, color: "#0f172a", marginBottom: 24 }}>
+          <h1 className="hero-title" style={{ fontFamily: "Sora,sans-serif", fontSize: 62, fontWeight: 800, lineHeight: 1.08, color: "#0f172a", marginBottom: 24 }}>
             {t.heroTitle1}{" "}
             <span style={{ background: "linear-gradient(135deg,#7c3aed,#059669)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{t.heroTitle2}</span>
           </h1>
           <p style={{ fontSize: 18, color: "#64748b", lineHeight: 1.7, maxWidth: 580, margin: "0 auto 36px" }}>
             {t.heroSub}
           </p>
-          <div style={{ display: "flex", gap: 12, maxWidth: 520, margin: "0 auto 24px", flexDirection: lang === "ar" ? "row-reverse" : "row" }}>
+          <div className="hero-search-row" style={{ display: "flex", gap: 12, maxWidth: 520, margin: "0 auto 24px", flexDirection: lang === "ar" ? "row-reverse" : "row" }}>
             <div style={{ position: "relative", flex: 1 }}>
               <span style={{ position: "absolute", left: lang === "ar" ? "auto" : 14, right: lang === "ar" ? 14 : "auto", top: "50%", transform: "translateY(-50%)", fontSize: 16 }}>🔍</span>
               <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === "Enter" && go("products")}
@@ -440,7 +556,7 @@ function HomePage() {
 
       {/* Stats */}
       <section style={{ borderTop: "1px solid #f1f5f9", borderBottom: "1px solid #f1f5f9" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 24px", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 24, textAlign: "center" }}>
+        <div className="stats-grid" style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 24px", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 24, textAlign: "center" }}>
           {[[t.statsSuppliers, t.statsLocal, "🇦🇪"], [t.statsIndustries, t.statsIndustriesLabel, "🏭"], [t.statsFree, t.statsFreeLabel, "✅"], [t.statsVerified, t.statsVerifiedLabel, "🔒"]].map(([val, label, icon]) => (
             <div key={label}>
               <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
@@ -452,13 +568,13 @@ function HomePage() {
       </section>
 
       {/* Categories */}
-      <section style={{ padding: "80px 24px" }}>
+      <section className="categories-section" style={{ padding: "80px 24px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
             <h2 style={{ fontFamily: "Sora,sans-serif", fontSize: 36, fontWeight: 800, color: "#0f172a", marginBottom: 8 }}>{t.exploreCategories}</h2>
             <p style={{ color: "#94a3b8", fontSize: 16 }}>{t.exploreSub}</p>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(140px,1fr))", gap: 14 }}>
+          <div className="categories-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(140px,1fr))", gap: 14 }}>
             {categories.map(cat => (
               <button key={cat.id} onClick={() => go("products", { category: cat.id })}
                 style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 14, padding: "20px 12px", cursor: "pointer", textAlign: "center", fontFamily: "Manrope,sans-serif", transition: "all .2s" }}
@@ -673,8 +789,8 @@ function ProductsPage({ initCategory = "", initSearch = "" }) {
             <option>Relevance</option><option>Price: Low to High</option><option>Price: High to Low</option><option>Newest</option>
           </select>
         </div>
-        <div style={{ display: "flex", gap: 32 }}>
-          <aside style={{ width: 220, flexShrink: 0 }}>
+        <div className="products-layout" style={{ display: "flex", gap: 32 }}>
+          <aside className="products-sidebar" style={{ width: 220, flexShrink: 0 }}>
             <div style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 14, padding: 20 }}>
               <div style={{ marginBottom: 20 }}>
                 <h3 style={{ fontWeight: 700, fontSize: 13, marginBottom: 10 }}>Search</h3>
@@ -702,7 +818,7 @@ function ProductsPage({ initCategory = "", initSearch = "" }) {
               </div>
             </div>
           </aside>
-          <div style={{ flex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(210px,1fr))", gap: 18, alignContent: "start" }}>
+          <div className="products-page-grid" style={{ flex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(210px,1fr))", gap: 18, alignContent: "start" }}>
             {loading ? <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 60 }}><Spinner /></div> :
             filtered.map(p => <ProductCard key={p.id} product={p} onClick={() => go("productDetail", { productId: p.id })} />)}
             {!loading && filtered.length === 0 && <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 60, color: "#94a3b8" }}><div style={{ fontSize: 40, marginBottom: 12 }}>🔍</div><div style={{ fontWeight: 600 }}>No products found</div></div>}
@@ -1355,7 +1471,7 @@ function SuppliersPage() {
   return (
     <div style={{ minHeight: "100vh" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 24px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 32, flexWrap: "wrap", gap: 16 }}>
+        <div className="suppliers-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 32, flexWrap: "wrap", gap: 16 }}>
           <div>
             <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 32, fontWeight: 800, marginBottom: 6 }}>UAE & GCC Suppliers</h1>
             <p style={{ color: "#94a3b8" }}>Verified suppliers ready to trade</p>
@@ -1386,7 +1502,7 @@ function SuppliersPage() {
             <button onClick={() => go("supplierRegister")} style={{ background: "#7c3aed", color: "#fff", border: "none", padding: "13px 32px", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope,sans-serif" }}>Register Now →</button>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 20 }}>
+          <div className="suppliers-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 20 }}>
             {filtered.map(s => (
               <div key={s.id} onClick={() => go("supplierProfile", { supplierId: s.id })}
                 style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 16, padding: 24, cursor: "pointer", transition: "all .2s" }}
@@ -1701,7 +1817,7 @@ function DashboardPage() {
           <h1 style={{ fontFamily: "Sora,sans-serif", fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Dashboard</h1>
           <p style={{ color: "#94a3b8" }}>Welcome back! Here's your trading overview.</p>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 28 }}>
+        <div className="dashboard-stats" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 28 }}>
           {[{ label: "Active Inquiries", value: dashboardStats.activeInquiries, icon: "📋", color: "#7c3aed" }, { label: "Pending Quotes", value: dashboardStats.pendingQuotes, icon: "⏱️", color: "#d97706" }, { label: "New Messages", value: dashboardStats.newMessages, icon: "📩", color: "#2563eb" }, { label: "Saved Products", value: dashboardStats.savedProducts, icon: "❤️", color: "#db2777" }].map(stat => (
             <div key={stat.label} style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 14, padding: 20, display: "flex", alignItems: "center", gap: 14 }}>
               <div style={{ width: 48, height: 48, borderRadius: 12, background: stat.color + "15", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{stat.icon}</div>
@@ -1733,8 +1849,8 @@ function DashboardPage() {
   }
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <div style={{ width: 220, background: "#fff", borderRight: "1px solid #f1f5f9", flexShrink: 0, padding: "24px 12px" }}>
+    <div className="dashboard-layout" style={{ display: "flex", minHeight: "100vh" }}>
+      <div className="dashboard-sidebar" style={{ width: 220, background: "#fff", borderRight: "1px solid #f1f5f9", flexShrink: 0, padding: "24px 12px" }}>
         <div style={{ padding: "0 8px", marginBottom: 24, fontFamily: "Sora,sans-serif", fontWeight: 800, fontSize: 16 }}>My Account</div>
         {navItems.map(item => (
           <button key={item.id} onClick={() => setActiveView(item.id)}
@@ -1777,7 +1893,7 @@ function AuthPage() {
 
   return (
     <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "linear-gradient(160deg,#f5f3ff 0%,#fff 60%)" }}>
-      <div style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 20, padding: 40, width: "100%", maxWidth: 420, boxShadow: "0 8px 40px rgba(124,58,237,0.08)", animation: "fadeUp .3s ease" }}>
+      <div className="auth-card" style={{ background: "#fff", border: "1px solid #f1f5f9", borderRadius: 20, padding: 40, width: "100%", maxWidth: 420, boxShadow: "0 8px 40px rgba(124,58,237,0.08)", animation: "fadeUp .3s ease" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 28 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#7c3aed,#6d28d9)", display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ color: "#fff", fontFamily: "Sora,sans-serif", fontWeight: 800, fontSize: 16 }}>U</span></div>
           <span style={{ fontFamily: "Sora,sans-serif", fontWeight: 800, fontSize: 20 }}>Usool</span>
