@@ -79,6 +79,9 @@ const C = {
 };
 const F = "Inter, -apple-system, BlinkMacSystemFont, sans-serif";
 const border = `0.5px solid ${C.border}`;
+const borderBottom = border;
+const borderTop = border;
+const borderRight = border;
 
 // ─── CONTEXTS ─────────────────────────────────────────────────────────────────
 const AuthContext = createContext(null);
